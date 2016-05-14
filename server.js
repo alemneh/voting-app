@@ -9,6 +9,7 @@ const userRouter = express.Router();
 const pollRouter = express.Router();
 
 require('./routes/users-routes')(userRouter, models);
+require('./routes/poll-routes')(pollRouter, models);
 
 
 app.use(bodyParser.json());
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', userRouter);
+app.use('/users', pollRouter);
 
 
 app.listen(3000, () => {console.log('port up on 3000');});

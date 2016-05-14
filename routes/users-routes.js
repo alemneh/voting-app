@@ -3,6 +3,7 @@
 
 module.exports = (userRouter, models) => {
   const User = models.User;
+  const Poll = models.Poll;
 
   userRouter.route('/signup')
     .post((req, res) => {
@@ -22,6 +23,14 @@ module.exports = (userRouter, models) => {
       });
     });
 
+    userRouter.route('/polls')
+      .get((req, res) => {
+        Poll.find({}, (err, polls) => {
+          if(err) throw err;
+          res.json({data: polls});
+        });
+      })
+
     userRouter.route('/users')
       .get((req, res) => {
         User.find({}, (err, users) => {
@@ -33,6 +42,7 @@ module.exports = (userRouter, models) => {
     userRouter.route('/users/:id')
       .get((req, res) => {
         User.findOne({_id:req.params.id}, (err, user) => {
+          console.log(err);
           if(err) throw err;
           res.json({data: user});
         });
@@ -42,47 +52,24 @@ module.exports = (userRouter, models) => {
         User.findByIdAndUpdate(req.params.id, req.body, (err, user) => {
           if(err) throw err;
           res.json({message: 'Update successful!'});
-        })
+        });
       })
       .delete((req, res) => {
         console.log(req.params.id);
         User.findById(req.params.id, (err, user) => {
-          if(err) throw err;
-          user.remove();
-          res.json({data: 'User deleted!'});
-        })
-      })
-
-    userRouter.route('/polls')
-      .get((req, res) => {
-        var polls = [];
-        User.find({}, (err, users) => {
-          if(err) throw err;
-          users.forEach((user) => {
-            user.polls.forEach((poll) => {
-              polls.push(poll);
+          user.polls.forEach((poll) => {
+            Poll.findById(poll, (err, data) => {
+              if(err) throw err;
+              data.remove();
             })
           })
-          res.json({data: polls});
-        })
-      })
+          user.remove((err, user) => {
+            if(err) throw err;
+            res.json({data: 'User removed!'});
+          });
+        });
+      });
 
-    userRouter.route('/users/:id/polls')
-      .get((req, res) => {
-        User.findById(req.params.id, (err, user) => {
-          if(err) throw err;
-          res.json({data: user.polls});
-        })
-      })
-      .post((req, res) => {
-        console.log(req.body);
-        User.findById(req.params.id, (err, user) => {
-          if(err) throw err;
-          user.polls.push(req.body);
-          user.save();
-          res.json({data: 'Poll added!'});
-        })
-      })
 
 
 }

@@ -7,7 +7,7 @@ module.exports = function(mongoose, models) {
   const userSchema = new mongoose.Schema({
     name: String,
     password: String,
-    polls: []
+    polls: [{ type: Schema.Types.ObjectId, ref:'Poll'}]
   });
 
   userSchema.pre('save', function(next) {
