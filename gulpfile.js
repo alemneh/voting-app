@@ -2,6 +2,8 @@
 const gulp = require('gulp');
 const mocha = require('gulp-mocha');
 const eslint = require('gulp-eslint');
+const concatCss = require('gulp-concat-css');
+const minifyCss = require('gulp-clean-css');
 const webpack = require('gulp-webpack');
 const webpackS = require('webpack-stream');
 
@@ -13,7 +15,8 @@ const sources = {
   html: __dirname + '/app/index.html',
   js: __dirname + '/app/js/index.js',
   test: __dirname + '/test/*_spec.js',
-  views: __dirname + '/views/*.html'
+  views: __dirname + '/views/*.html',
+  css: __dirname + '/app/css/*.css'
 };
 //Run mocha for tests
 gulp.task('mocha', function() {
@@ -87,6 +90,13 @@ gulp.task('bundle:test', () => {
     .pipe(gulp.dest('./test'));
 });
 
+gulp.task('css', function() {
+  return gulp.src(sources.css)
+  .pipe(concatCss('styles.min.css'))
+  .pipe(minifyCss({compatibility: 'ie8'}))
+  .pipe(gulp.dest('./build/css'));
+});
+
 gulp.task('webpack', function() {
   return gulp.src(__dirname + '/app/js/index.js')
     .pipe(webpack( require('./webpack.config.js')))
@@ -98,4 +108,4 @@ gulp.task('watch', function() {
 });
 gulp.task('build',['build:html', 'build:css', 'webpack']);
 //Run tasks on changes to files
-gulp.task('default',['mocha', 'lint']);
+gulp.task('default', ['webpack', 'build:html', 'css', 'bundle:test', 'build:views']);

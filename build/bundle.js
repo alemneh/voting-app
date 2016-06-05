@@ -47,7 +47,19 @@
 	'use strict';
 	__webpack_require__(1);
 
-	const app = angular.module('PollCity', []);
+	const app = angular.module('PollCity', ['ngRoute']);
+	  // DIRECTIVES
+	__webpack_require__(3)(app);
+
+	  // SERVICES
+	__webpack_require__(4)(app);
+	__webpack_require__(5)(app);
+
+	  // CONTROLLERS
+	__webpack_require__(6)(app);
+
+	 // ROUTES
+	__webpack_require__(7)(app);
 
 	app.controller('MainController', ['$http', function($http) {
 
@@ -30937,6 +30949,183 @@
 	})(window);
 
 	!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+
+	  app.directive('navBar', function() {
+	    return {
+	      return: 'E',
+	      templateUrl: './views/nav-view.html'
+	    };
+	  });
+
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
+	    const mainRoute = 'http://localhost:3000/';
+
+	    function Resource(resourceName) {
+	      this.resourceName = resourceName;
+	    }
+
+	    Resource.prototype.getAll = function() {
+	      return $http.get(mainRoute + this.resourceName);
+	    };
+
+
+	    Resource.prototype.getOne = function(id) {
+	      return $http.get(mainRoute + this.resourceName + (id ? '/' + id : ''), {
+	        headers: {
+	          Authorization: 'Token ' + AuthService.getToken()
+	        }
+	      });
+	    };
+
+	    Resource.prototype.getOneSubResource = function(id, subResource) {
+	      return $http.get(mainRoute + this.resourceName + '/' + id + '/' + subResource, {
+	        headers: {
+	          Authorization: 'Token ' + AuthService.getToken()
+	        }
+	      });
+	    }
+
+	    Resource.prototype.create = function(data) {
+	      return $http.post(mainRoute + this.resourceName, data);
+	    };
+
+	    Resource.prototype.createComic = function(data) {
+	      return $http.post(mainRoute + this.resourceName, data, {
+	        headers: {
+	          Authorization: 'Token ' + AuthService.getToken()
+	        }
+	      });
+	    };
+
+	    Resource.prototype.update = function(data, id) {
+	      console.log(data);
+	      return $http.put(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
+	        headers: {
+	          Authorization: 'Token ' + AuthService.getToken()
+	        }
+	      });
+	    };
+
+	    Resource.prototype.remove = function(id) {
+	      return $http.delete(mainRoute + this.resourceName + (id ? '/' + id : ''), {
+	        headers: {
+	          Authorization: 'Token ' + AuthService.getToken()
+	        }
+	      });
+	    }
+
+	    return function(resourceName) {
+	      return new Resource(resourceName);
+	    };
+
+	  }]);
+	}
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = function(app) {
+	  app.factory('AuthService', ['$http', '$window', function($http, $window) {
+	    var token;
+	    var signedIn = false;
+	    var url = 'http://54.201.60.218';
+	    var auth = {
+	      createUser(user, cb) {
+	        cb || function() {};
+	        $http.post(url + '/users/signup', user)
+	          .then((res) => {
+	            console.log(res);
+	            cb(null, res);
+	          }, (err) => {
+	            cb(err);
+	          });
+	      },
+	      getToken() {
+	        return token || $window.localStorage.token;
+	      },
+	      signOut(cb) {
+	        token = null;
+	        $window.localStorage.removeItem('token');
+	        if (cb) cb();
+	      },
+	      signIn(user, cb) {
+	        cb || function() {};
+	        $http.post(url + '/users/signin', user )
+	          .then((res) => {
+	          token = $window.localStorage.token = res.data.token;
+	          cb(null, res);
+	        }, (err) => {
+	          cb(err);
+	        });
+	      }
+	    };
+	    return auth;
+	  }]);
+	};
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+
+	module.exports = function(app) {
+	  app.controller('HomeController', ['httpService', 'AuthService',
+	  function(httpService, AuthService) {
+	    let _this = this;
+	    let pollResource = httpService('polls');
+	    _this.polls = ['polls'];
+
+	    _this.getPolls = function() {
+	      pollResource.getAll().then((res) => {
+	        console.log(res);
+	        _this.polls = res.data.data;
+	      }, function(error) {
+	        console.log(error);
+	      })
+	    }
+
+
+
+	  }])
+	}
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function(app) {
+
+	  app.config(['$routeProvider', function($routeProvider) {
+	    $routeProvider.when('/', {
+	      templateUrl: './views/home.html'
+	    }).when('/mypoll', {
+	      templateUrl: './views/my-polls.html'
+	    })
+	  }]);
+	};
+
 
 /***/ }
 /******/ ]);

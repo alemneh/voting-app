@@ -1,0 +1,6 @@
+<section data-ng-init="homeCtrl.getPolls()" data-ng-controller="HomeController as homeCtrl">
+  <h1>Polls</h1>
+  <ul>
+    <li data-ng-repeat="poll in homeCtrl.polls">{{poll.name}}</li>
+  </ul>
+</section>
