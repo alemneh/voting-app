@@ -17,7 +17,7 @@ module.exports = function(mongoose, models) {
 
   //userSchema.methods.hashPassword
   userSchema.methods.compareHash = function(password) {
-    return bcrypt.comareSync(password, this.password);
+    return bcrypt.compareSync(password, this.password);
   };
 
   userSchema.methods.generateToken = function() {

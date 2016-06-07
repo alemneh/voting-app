@@ -31115,6 +31115,7 @@
 	           'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
 	         }
 	       }).then((res) => {
+	         console.log(res);
 	         token = $window.localStorage.token = res.data.token;
 	         cb(null, res);
 	       }, (err) => {
@@ -31171,7 +31172,7 @@
 	  app.controller('NavController', ['AuthService', '$http',
 	  function(AuthService, $http) {
 	    let _this = this;
-	    _this.signedIn = true;
+	    _this.signedIn = false;
 
 
 	    var req = {
@@ -31184,9 +31185,10 @@
 
 	    _this.signIn = function(user) {
 	      console.log(user);
-	      $http(req).then((res) => {
-	        console.log(res);
-	      }, (err) => console.log(err))
+	      AuthService.signIn(user, (err, res) => {
+	        if(err) console.log(err);
+	        _this.signedIn = true;
+	      })
 	    }
 	  }])
 	}

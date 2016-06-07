@@ -29,6 +29,7 @@ module.exports = function(app) {
            'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
          }
        }).then((res) => {
+         console.log(res);
          token = $window.localStorage.token = res.data.token;
          cb(null, res);
        }, (err) => {
