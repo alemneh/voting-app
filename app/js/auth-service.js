@@ -2,7 +2,7 @@ module.exports = function(app) {
   app.factory('AuthService', ['$http', '$window', function($http, $window) {
     var token;
     var signedIn = false;
-    var url = 'http://54.201.60.218';
+    var url = 'http://localhost:3000';
     var auth = {
       createUser(user, cb) {
         cb || function() {};
@@ -24,14 +24,17 @@ module.exports = function(app) {
       },
       signIn(user, cb) {
         cb || function() {};
-        $http.post(url + '/users/signin', user )
-          .then((res) => {
-          token = $window.localStorage.token = res.data.token;
-          cb(null, res);
-        }, (err) => {
-          cb(err);
-        });
-      }
+        $http.get(url + '/login', {
+          headers: {
+           'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
+         }
+       }).then((res) => {
+         token = $window.localStorage.token = res.data.token;
+         cb(null, res);
+       }, (err) => {
+         cb(err);
+       });
+     }
     };
     return auth;
   }]);

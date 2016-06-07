@@ -1,0 +1,28 @@
+<div data-ng-controller="PollController as pollCtrl"class="container">
+  <div class="row">
+    <div class="col-md-6">
+    <form data-ng-submit="pollCtrl.updatePoll(poll)" class="form-horizontal">
+      <fieldset>
+        <legend>{{pollCtrl.poll.name}}</legend>
+        <div class="form-group">
+        <label for="select" class="col-lg-2 control-label">Selects</label>
+        <div class="col-lg-10">
+          <select data-ng-model="poll.option" class="form-control" id="select">
+            <option data-ng-repeat="option in pollCtrl.poll.options">{{option.name}}</option>
+          </select>
+        </div>
+      </div>
+        <div class="form-group">
+          <div class="col-lg-10 col-lg-offset-2">
+            <button type="reset" class="btn btn-default">Cancel</button>
+            <button type="submit" class="btn btn-primary">Vote</button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+    </div>
+    <div data-ng-controller="ChartController as chartCtrl" class="col-md-6">
+      <canvas data-ng-init="chartCtrl.getPoll()" id="myChart" width="400" height="400"></canvas>
+    </div>
+  </div>
+</div>

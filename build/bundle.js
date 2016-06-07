@@ -57,14 +57,56 @@
 
 	  // CONTROLLERS
 	__webpack_require__(6)(app);
+	__webpack_require__(7)(app);
+	__webpack_require__(8)(app);
+	__webpack_require__(9)(app);
+	__webpack_require__(10)(app);
 
 	 // ROUTES
-	__webpack_require__(7)(app);
+	__webpack_require__(11)(app);
 
-	app.controller('MainController', ['$http', function($http) {
+	app.controller('MainController', ['$http', '$location', '$window',
+	 function($http, $location, $window) {
 
 	  const _this = this;
-	  _this.greetings = 'Hello!';
+
+	  // Poll Constructor
+	  function Poll(name) {
+	    this.name = name;
+	    this.options = [];
+	    this.addOp = addOp;
+	    this.addVote = addVote;
+
+	    function addOp(opt) {
+	      this.options.push({name:opt, count: 0});
+	    }
+
+	    function addVote(option) {
+	      this.options.forEach((ele) => {
+	        if(ele.name == option) {
+	          ele.count++;
+	          return;
+	        }
+	      })
+	    }
+
+	  }
+
+
+
+	  _this.createPoll =function(poll, id) {
+	    var options = poll.options.split('\n');
+	    var newPoll = new Poll(poll.name);
+	    options.forEach((ele) => {
+	      newPoll.addOp(ele);
+	    })
+	    console.log(newPoll);
+	    $http.post('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls', newPoll)
+	      .then((res) => {
+	        $location.path('/mypolls');
+	        // _this.pollSaved = true;
+	      }, (err) => console.log(err))
+	  };
 
 	}])
 
@@ -30959,7 +31001,9 @@
 	  app.directive('navBar', function() {
 	    return {
 	      return: 'E',
-	      templateUrl: './views/nav-view.html'
+	      templateUrl: './views/nav-view.html',
+	      controller: 'NavController',
+	      controllerAs: 'navCtrl'
 	    };
 	  });
 
@@ -31003,8 +31047,8 @@
 	      return $http.post(mainRoute + this.resourceName, data);
 	    };
 
-	    Resource.prototype.createComic = function(data) {
-	      return $http.post(mainRoute + this.resourceName, data, {
+	    Resource.prototype.createPoll = function(data, id) {
+	      return $http.post(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
 	        headers: {
 	          Authorization: 'Token ' + AuthService.getToken()
 	        }
@@ -31044,7 +31088,7 @@
 	  app.factory('AuthService', ['$http', '$window', function($http, $window) {
 	    var token;
 	    var signedIn = false;
-	    var url = 'http://54.201.60.218';
+	    var url = 'http://localhost:3000';
 	    var auth = {
 	      createUser(user, cb) {
 	        cb || function() {};
@@ -31066,14 +31110,17 @@
 	      },
 	      signIn(user, cb) {
 	        cb || function() {};
-	        $http.post(url + '/users/signin', user )
-	          .then((res) => {
-	          token = $window.localStorage.token = res.data.token;
-	          cb(null, res);
-	        }, (err) => {
-	          cb(err);
-	        });
-	      }
+	        $http.get(url + '/login', {
+	          headers: {
+	           'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
+	         }
+	       }).then((res) => {
+	         token = $window.localStorage.token = res.data.token;
+	         cb(null, res);
+	       }, (err) => {
+	         cb(err);
+	       });
+	     }
 	    };
 	    return auth;
 	  }]);
@@ -31088,19 +31135,23 @@
 
 
 	module.exports = function(app) {
-	  app.controller('HomeController', ['httpService', 'AuthService',
-	  function(httpService, AuthService) {
+	  app.controller('HomeController', ['httpService', 'AuthService', '$window', '$location',
+	  function(httpService, AuthService, $window, $location) {
 	    let _this = this;
 	    let pollResource = httpService('polls');
 	    _this.polls = ['polls'];
 
 	    _this.getPolls = function() {
 	      pollResource.getAll().then((res) => {
-	        console.log(res);
 	        _this.polls = res.data.data;
 	      }, function(error) {
 	        console.log(error);
 	      })
+	    }
+
+	    _this.getPoll = function(poll) {
+	      $window.localStorage.poll = JSON.stringify(poll);
+	      $location.path('/pollview');
 	    }
 
 
@@ -31117,11 +31168,206 @@
 
 	module.exports = function(app) {
 
+	  app.controller('NavController', ['AuthService', '$http',
+	  function(AuthService, $http) {
+	    let _this = this;
+	    _this.signedIn = true;
+
+
+	    var req = {
+	      method:'GET',
+	      url: 'http://localhost:3000/login',
+	      headers: {
+	        'authorization': 'hit'
+	      }
+	    }
+
+	    _this.signIn = function(user) {
+	      console.log(user);
+	      $http(req).then((res) => {
+	        console.log(res);
+	      }, (err) => console.log(err))
+	    }
+	  }])
+	}
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function(app) {
+	  app.controller('PollController', ['$window', '$location', '$http', '$route',
+	  function($window, $location, $http, $route) {
+	    function Poll(name) {
+	      this.name = name;
+	      this.options = [];
+	      this.addOp = addOp;
+	      this.addVote = addVote;
+
+	      function addOp(opt) {
+	        this.options.push({name:opt, count: 0});
+	      }
+
+	      function addVote(option) {
+	        this.options.forEach((ele) => {
+	          if(ele.name == option) {
+	            ele.count++;
+	            return;
+	          }
+	        })
+	      }
+
+	    }
+
+
+	    let _this = this;
+	    _this.poll = JSON.parse($window.localStorage.poll);
+
+	    _this.updatePoll = function(poll) {
+	      this.poll.options.forEach((ele) => {
+	        if(ele.name == poll.option) return ele.count++;
+	      })
+	      $http.put('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id, _this.poll)
+	        .then((res) => {
+	          $route.reload();
+	        }, (err) => console.log(err))
+	    }
+
+	  }]);
+	};
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function(app) {
+	  app.controller('ChartController', ['$window', '$http', '$route', function($window, $http, $route) {
+	    let _this = this;
+	    _this.poll = JSON.parse($window.localStorage.poll);
+	    _this.labels = [];
+	    _this.data = [];
+
+	    function updateChart(poll) {
+	      _this.data = [];
+	      poll.options.forEach((ele) => {
+	        _this.labels.push(ele.name);
+	        _this.data.push(ele.count);
+	      })
+	    }
+
+	    updateChart(_this.poll);
+
+
+	    _this.getPoll = function() {
+	      $http.get('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id)
+	        .then((res) => {
+	          $window.localStorage.poll = JSON.stringify(res.data.data);
+	          $route.reload();
+	        }, (err) => console.log(err))
+	    };
+
+	    var ctx = document.getElementById("myChart");
+	    var myChart = new Chart(ctx, {
+	        type: 'bar',
+	        data: {
+	            labels: _this.labels,
+	            datasets: [{
+	                label: '# of Votes',
+	                data: _this.data,
+	                backgroundColor: [
+	                    'rgba(255, 99, 132, 0.2)',
+	                    'rgba(54, 162, 235, 0.2)',
+	                    'rgba(255, 206, 86, 0.2)',
+	                    'rgba(75, 192, 192, 0.2)',
+	                    'rgba(153, 102, 255, 0.2)',
+	                    'rgba(255, 159, 64, 0.2)'
+	                ],
+	                borderColor: [
+	                    'rgba(255,99,132,1)',
+	                    'rgba(54, 162, 235, 1)',
+	                    'rgba(255, 206, 86, 1)',
+	                    'rgba(75, 192, 192, 1)',
+	                    'rgba(153, 102, 255, 1)',
+	                    'rgba(255, 159, 64, 1)'
+	                ],
+	                borderWidth: 1
+	            }]
+	        },
+	        options: {
+	            scales: {
+	                yAxes: [{
+	                    ticks: {
+	                        beginAtZero:true
+	                    }
+	                }]
+	            }
+	        }
+	    });
+
+
+
+	  }])
+	}
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function(app) {
+	  app.controller('MyPollsController', ['$http', function($http) {
+	    let _this = this;
+
+	    _this.polls = ['polls'];
+	    -this.owner;
+
+	    _this.getAllPolls = function() {
+	      $http.get('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/')
+	        .then((res) => {
+	          _this.polls = res.data.data;
+	          _this.owner = res.data.data[0]._owner[0];
+	        }, (err) => console.log(err))
+	    };
+
+	    _this.removePoll = function(poll) {
+	      console.log(poll);
+	      $http.delete('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + poll._id)
+	        .then((res) => {
+	          console.log(res);
+	          _this.polls = _this.polls.filter((p) => p._id != poll._id);
+	          console.log(_this.polls);
+	        }, (err) => console.log(err))
+	    }
+
+	  }])
+	}
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function(app) {
+
 	  app.config(['$routeProvider', function($routeProvider) {
 	    $routeProvider.when('/', {
 	      templateUrl: './views/home.html'
-	    }).when('/mypoll', {
+	    }).when('/mypolls', {
 	      templateUrl: './views/my-polls.html'
+	    }).when('/newpoll', {
+	      templateUrl: './views/new-poll.html'
+	    }).when('/pollview', {
+	      templateUrl: './views/poll-view.html'
 	    })
 	  }]);
 	};

@@ -5,6 +5,7 @@ module.exports = (loginRouter, models) => {
 
   loginRouter.route('/login')
     .get((res, req) => {
+      console.log(JSON.stringify(req.headers));
       const authorizationArray = req.headers.authorization.split(' ');
       const method = authorizationArray[0];
       const base64ed = authorizationArray[1];

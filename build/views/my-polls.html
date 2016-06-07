@@ -1,0 +1,26 @@
+<section class="container" data-ng-init="mypollsCtrl.getAllPolls()" data-ng-controller="MyPollsController as mypollsCtrl">
+  <h1>{{mypollsCtrl.owner}}'s Polls</h1>
+  <table class="table table-striped table-hover ">
+  <thead>
+    <tr class="active">
+      <th>#</th>
+      <th>Name</th>
+      <th>Option 1</th>
+      <th>Option 2</th>
+      <th>DELETE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="info" data-ng-repeat="poll in mypollsCtrl.polls">
+      <a  href="#">
+      <td>1</td>
+
+        <td >{{poll.name}}</td>
+        <td>{{poll.options[0]}}</td>
+        <td>{{poll.options[1]}}</td>
+        <td><a data-ng-click="mypollsCtrl.removePoll(poll)"   class="btn btn-danger">Danger</a></td>
+      </a>
+    </tr>
+  </tbody>
+  </table>
+</section>

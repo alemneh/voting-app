@@ -5,6 +5,7 @@ module.exports = (mongoose, models) => {
   const pollSchema = new mongoose.Schema({
     _owner: [{type: String, ref: 'Student'}],
     name: String,
+    date: {type: Date, default: Date.now}, 
     options: []
   });
 

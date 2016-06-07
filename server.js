@@ -4,14 +4,18 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const models = require('./models');
-const loginRouter = express.Router();
 const userRouter = express.Router();
 const pollRouter = express.Router();
+const loginRouter = express.Router();
+
+
 
 require('./routes/users-routes')(userRouter, models);
 require('./routes/poll-routes')(pollRouter, models);
+require('./routes/login-signup')(loginRouter, models);
 
 
+app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
@@ -21,7 +25,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', userRouter);
+
+app.use('/', loginRouter, userRouter);
+
 app.use('/users', pollRouter);
 
 

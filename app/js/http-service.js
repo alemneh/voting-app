@@ -31,8 +31,8 @@ module.exports = function(app) {
       return $http.post(mainRoute + this.resourceName, data);
     };
 
-    Resource.prototype.createComic = function(data) {
-      return $http.post(mainRoute + this.resourceName, data, {
+    Resource.prototype.createPoll = function(data, id) {
+      return $http.post(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
         headers: {
           Authorization: 'Token ' + AuthService.getToken()
         }
