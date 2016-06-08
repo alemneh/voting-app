@@ -11,6 +11,8 @@ module.exports = function(app) {
       templateUrl: './views/new-poll.html'
     }).when('/pollview', {
       templateUrl: './views/poll-view.html'
-    })
+    }).when('/signup', {
+      templateUrl: './views/signup.html'
+    });
   }]);
 };
