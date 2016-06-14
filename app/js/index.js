@@ -19,47 +19,59 @@ require('./my-polls')(app);
  // ROUTES
 require('./route-config')(app);
 
-app.controller('MainController', ['$http', '$location', '$window',
- function($http, $location, $window) {
+app.controller('MainController', ['httpService', 'AuthService', '$location', '$window',
+ function(httpService, AuthService, $location, $window) {
 
-  const _this = this;
+   const _this = this;
+   const pollResource = httpService('users/', '/polls');
 
   // Poll Constructor
-  function Poll(name) {
-    this.name = name;
-    this.options = [];
-    this.addOp = addOp;
-    this.addVote = addVote;
+   function Poll(name) {
+     this.name = name;
+     this.options = [];
+     this.addOp = addOp;
+     this.addVote = addVote;
 
-    function addOp(opt) {
-      this.options.push({name:opt, count: 0});
-    }
+     function addOp(opt) {
+       this.options.push({name:opt, count: 0});
+     }
 
-    function addVote(option) {
-      this.options.forEach((ele) => {
-        if(ele.name == option) {
-          ele.count++;
-          return;
-        }
-      })
-    }
+     function addVote(option) {
+       this.options.forEach((ele) => {
+         if(ele.name == option) {
+           ele.count++;
+           return;
+         }
+       });
+     }
 
-  }
+   }
 
 
+   _this.createUser = function(user) {
+     AuthService.createUser(user, (err, res) => {
+       if(!res) {
+         console.log(err.data.error);
+         _this.signupError = true;
+       } else {
+         $location.path('/');
+       }
 
-  _this.createPoll =function(poll, id) {
-    var options = poll.options.split('\n');
-    var newPoll = new Poll(poll.name);
-    options.forEach((ele) => {
-      newPoll.addOp(ele);
-    })
-    console.log(newPoll);
-    $http.post('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls', newPoll)
-      .then((res) => {
-        $location.path('/mypolls');
-        // _this.pollSaved = true;
-      }, (err) => console.log(err))
-  };
+     });
+   };
 
-}])
+   _this.createPoll =function(poll) {
+     var id = $window.localStorage.id;
+     var options = poll.options.split('\n');
+     var newPoll = new Poll(poll.name);
+     options.forEach((ele) => {
+       newPoll.addOp(ele);
+     });
+     console.log(id);
+     pollResource.createPoll(newPoll, id).then((res) => {
+       console.log(res);
+       $location.path('/mypolls');
+     });
+   };
+
+ }]);

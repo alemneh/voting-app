@@ -5,16 +5,15 @@
       <fieldset>
         <legend>{{pollCtrl.poll.name}}</legend>
         <div class="form-group">
-        <label for="select" class="col-lg-2 control-label">Selects</label>
+        <label for="select" class="col-lg-2 control-label">Select</label>
         <div class="col-lg-10">
-          <select data-ng-model="poll.option" class="form-control" id="select">
+          <select name="select" data-ng-init="poll.option='No option'" data-ng-model="poll.option" class="form-control" id="select" required>
             <option data-ng-repeat="option in pollCtrl.poll.options">{{option.name}}</option>
           </select>
         </div>
       </div>
         <div class="form-group">
           <div class="col-lg-10 col-lg-offset-2">
-            <button type="reset" class="btn btn-default">Cancel</button>
             <button type="submit" class="btn btn-primary">Vote</button>
           </div>
         </div>

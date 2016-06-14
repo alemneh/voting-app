@@ -1,15 +1,15 @@
 <div class="container">
-  <div data-ng-if="mainCtrl.pollSaved" class="alert alert-dismissible alert-success">
+  <div data-ng-if="mainCtrl.signupError" class="alert alert-dismissible alert-danger">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
-    You successfully signed up!
+    Username taken!
   </div>
-  <form data-ng-submit="mainCtrl.createPoll(poll)" class="form-horizontal">
+  <form data-ng-submit="mainCtrl.createUser(newUser)" class="form-horizontal">
     <fieldset>
       <legend>Sign Up</legend>
       <div class="form-group">
         <label for="inputName" class="col-lg-2 control-label">Username</label>
         <div class="col-lg-10">
-          <input data-ng-model="newUser.username" type="text" class="form-control" id="inputUsername" placeholder="Username">
+          <input data-ng-model="newUser.name" type="text" class="form-control" id="inputName" placeholder="Username">
         </div>
       </div>
       <div class="form-group">
@@ -19,15 +19,9 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="inputName" class="col-lg-2 control-label">Email</label>
-        <div class="col-lg-10">
-          <input data-ng-model="newUser.email" type="text" class="form-control" id="inputEmail" placeholder="Email">
-        </div>
-      </div>
-      <div class="form-group">
         <div class="col-lg-10 col-lg-offset-2">
           <button type="reset" class="btn btn-default">Cancel</button>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Sign Up</button>
         </div>
       </div>
     </fieldset>

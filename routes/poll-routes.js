@@ -1,4 +1,5 @@
 'use strict';
+const jwtAuth = require('../lib/auth.js');
 
 module.exports = (pollRouter, models) => {
   const Poll = models.Poll;
@@ -16,9 +17,9 @@ module.exports = (pollRouter, models) => {
           res.json({data: user.polls});
         });
     })
-    .post((req, res) => {
+    .post(jwtAuth, (req, res) => {
       User.findById(req.params.id, (err, user) => {
-
+        console.log(req.body);
         var newPoll = new Poll();
         newPoll._owner = user.name;
         newPoll.name = req.body.name;
@@ -47,12 +48,13 @@ module.exports = (pollRouter, models) => {
       });
     })
     .put((req, res) => {
+      console.log(req.ip);
       Poll.findByIdAndUpdate(req.params.pollId, req.body, (err, poll) => {
         if(err) throw err;
         res.json({data: 'Poll updated!'});
       });
     })
-    .delete((req, res) => {
+    .delete(jwtAuth, (req, res) => {
       Poll.findById(req.params.pollId, (err, poll) => {
         poll.remove((err, poll) => {
           User.findById(req.params.id, (err, user) => {

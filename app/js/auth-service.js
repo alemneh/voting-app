@@ -6,7 +6,7 @@ module.exports = function(app) {
     var auth = {
       createUser(user, cb) {
         cb || function() {};
-        $http.post(url + '/users/signup', user)
+        $http.post(url + '/signup', user)
           .then((res) => {
             console.log(res);
             cb(null, res);
@@ -31,6 +31,10 @@ module.exports = function(app) {
        }).then((res) => {
          console.log(res);
          token = $window.localStorage.token = res.data.token;
+         if(res.data.status == 'failure') {
+           console.log('In');
+           $window.localStorage.removeItem('token');
+         }
          cb(null, res);
        }, (err) => {
          cb(err);

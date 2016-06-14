@@ -1,26 +1,9 @@
 <section class="container" data-ng-init="homeCtrl.getPolls()" data-ng-controller="HomeController as homeCtrl">
-  <h1>Current Polls</h1>
-  <table class="table table-striped table-hover ">
-  <thead>
-    <tr class="active">
-      <th>#</th>
-      <th>Name</th>
-      <th>Option 1</th>
-      <th>Option 2</th>
-      <th>Option 3</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="info" data-ng-repeat="poll in homeCtrl.polls">
-      <a  href="#">
-      <td>1</td>
-
-        <td data-ng-click="homeCtrl.getPoll(poll)" >{{poll.name}}</td>
-        <td>{{poll.options[0]}}</td>
-        <td>{{poll.options[1]}}</td>
-        <td>{{poll.options[2]}}</td>
-      </a>
-    </tr>
-  </tbody>
-  </table>
+  <h1>Trending Polls</h1>
+  <div class="list-group">
+    <a data-ng-click="homeCtrl.getPoll(poll)" data-ng-repeat="poll in homeCtrl.polls"  class="list-group-item">
+      <h4 class="list-group-item-heading">{{poll.name}}</h4>
+      <p class="list-group-item-text">Created by {{poll._owner[0]}}</p>
+    </a>
+  </div>
 </section>

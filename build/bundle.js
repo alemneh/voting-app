@@ -65,50 +65,62 @@
 	 // ROUTES
 	__webpack_require__(11)(app);
 
-	app.controller('MainController', ['$http', '$location', '$window',
-	 function($http, $location, $window) {
+	app.controller('MainController', ['httpService', 'AuthService', '$location', '$window',
+	 function(httpService, AuthService, $location, $window) {
 
-	  const _this = this;
+	   const _this = this;
+	   const pollResource = httpService('users/', '/polls');
 
 	  // Poll Constructor
-	  function Poll(name) {
-	    this.name = name;
-	    this.options = [];
-	    this.addOp = addOp;
-	    this.addVote = addVote;
+	   function Poll(name) {
+	     this.name = name;
+	     this.options = [];
+	     this.addOp = addOp;
+	     this.addVote = addVote;
 
-	    function addOp(opt) {
-	      this.options.push({name:opt, count: 0});
-	    }
+	     function addOp(opt) {
+	       this.options.push({name:opt, count: 0});
+	     }
 
-	    function addVote(option) {
-	      this.options.forEach((ele) => {
-	        if(ele.name == option) {
-	          ele.count++;
-	          return;
-	        }
-	      })
-	    }
+	     function addVote(option) {
+	       this.options.forEach((ele) => {
+	         if(ele.name == option) {
+	           ele.count++;
+	           return;
+	         }
+	       });
+	     }
 
-	  }
+	   }
 
 
+	   _this.createUser = function(user) {
+	     AuthService.createUser(user, (err, res) => {
+	       if(!res) {
+	         console.log(err.data.error);
+	         _this.signupError = true;
+	       } else {
+	         $location.path('/');
+	       }
 
-	  _this.createPoll =function(poll, id) {
-	    var options = poll.options.split('\n');
-	    var newPoll = new Poll(poll.name);
-	    options.forEach((ele) => {
-	      newPoll.addOp(ele);
-	    })
-	    console.log(newPoll);
-	    $http.post('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls', newPoll)
-	      .then((res) => {
-	        $location.path('/mypolls');
-	        // _this.pollSaved = true;
-	      }, (err) => console.log(err))
-	  };
+	     });
+	   };
 
-	}])
+	   _this.createPoll =function(poll) {
+	     var id = $window.localStorage.id;
+	     var options = poll.options.split('\n');
+	     var newPoll = new Poll(poll.name);
+	     options.forEach((ele) => {
+	       newPoll.addOp(ele);
+	     });
+	     console.log(id);
+	     pollResource.createPoll(newPoll, id).then((res) => {
+	       console.log(res);
+	       $location.path('/mypolls');
+	     });
+	   };
+
+	 }]);
 
 
 /***/ },
@@ -31018,19 +31030,31 @@
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
 	    const mainRoute = 'http://localhost:3000/';
 
-	    function Resource(resourceName) {
+	    function Resource(resourceName, subResource) {
+	      console.log(resourceName);
+	      console.log(subResource);
 	      this.resourceName = resourceName;
+	      this.subResource = subResource;
 	    }
 
 	    Resource.prototype.getAll = function() {
 	      return $http.get(mainRoute + this.resourceName);
 	    };
 
+	    Resource.prototype.getAllMyPolls = function(id) {
+	      return $http.get(mainRoute + this.resourceName + id + this.subResource, {
+	        headers: {
+	          token: AuthService.getToken()
+	        }
+	      });
+	    };
+
+
 
 	    Resource.prototype.getOne = function(id) {
 	      return $http.get(mainRoute + this.resourceName + (id ? '/' + id : ''), {
 	        headers: {
-	          Authorization: 'Token ' + AuthService.getToken()
+	          token: AuthService.getToken()
 	        }
 	      });
 	    };
@@ -31038,7 +31062,7 @@
 	    Resource.prototype.getOneSubResource = function(id, subResource) {
 	      return $http.get(mainRoute + this.resourceName + '/' + id + '/' + subResource, {
 	        headers: {
-	          Authorization: 'Token ' + AuthService.getToken()
+	          token: AuthService.getToken()
 	        }
 	      });
 	    }
@@ -31048,9 +31072,9 @@
 	    };
 
 	    Resource.prototype.createPoll = function(data, id) {
-	      return $http.post(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
+	      return $http.post(mainRoute + this.resourceName + id + this.subResource, data, {
 	        headers: {
-	          Authorization: 'Token ' + AuthService.getToken()
+	          token: AuthService.getToken()
 	        }
 	      });
 	    };
@@ -31059,7 +31083,7 @@
 	      console.log(data);
 	      return $http.put(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
 	        headers: {
-	          Authorization: 'Token ' + AuthService.getToken()
+	          token: AuthService.getToken()
 	        }
 	      });
 	    };
@@ -31067,13 +31091,21 @@
 	    Resource.prototype.remove = function(id) {
 	      return $http.delete(mainRoute + this.resourceName + (id ? '/' + id : ''), {
 	        headers: {
-	          Authorization: 'Token ' + AuthService.getToken()
+	          token: AuthService.getToken()
 	        }
 	      });
 	    }
 
-	    return function(resourceName) {
-	      return new Resource(resourceName);
+	    Resource.prototype.removePoll = function(id, pollId) {
+	      return $http.delete(mainRoute + this.resourceName + id + this.subResource + '/'+ pollId, {
+	        headers: {
+	          token: AuthService.getToken()
+	        }
+	      });
+	    }
+
+	    return function(resourceName, subResource) {
+	      return new Resource(resourceName, subResource);
 	    };
 
 	  }]);
@@ -31092,7 +31124,7 @@
 	    var auth = {
 	      createUser(user, cb) {
 	        cb || function() {};
-	        $http.post(url + '/users/signup', user)
+	        $http.post(url + '/signup', user)
 	          .then((res) => {
 	            console.log(res);
 	            cb(null, res);
@@ -31117,6 +31149,10 @@
 	       }).then((res) => {
 	         console.log(res);
 	         token = $window.localStorage.token = res.data.token;
+	         if(res.data.status == 'failure') {
+	           console.log('In');
+	           $window.localStorage.removeItem('token');
+	         }
 	         cb(null, res);
 	       }, (err) => {
 	         cb(err);
@@ -31187,14 +31223,21 @@
 	      console.log(user);
 	      AuthService.signIn(user, (err, res) => {
 	        if(err) console.log(err);
-	        _this.userId = $window.localStorage.id = res.data.id._id;
-	        _this.userName = $window.localStorage.name = res.data.id.name;
-	        _this.signedIn = true;
-	        _this.signedOut = false;
+	        if(res.data.status == 'failure') {
+	          console.log(res.data.message);
+	        } else {
+	          console.log('hit');
+	          _this.userId = $window.localStorage.id = res.data.id._id;
+	          _this.userName = $window.localStorage.name = res.data.id.name;
+	          _this.signedIn = true;
+	          _this.signedOut = false;
+	        }
+
 	      });
 	    };
 
 	    _this.signOut = function() {
+	      console.log('hit');
 	      AuthService.signOut(() => {
 	        $window.localStorage.removeItem('name');
 	        $window.localStorage.removeItem('id');
@@ -31241,13 +31284,18 @@
 	    _this.poll = JSON.parse($window.localStorage.poll);
 
 	    _this.updatePoll = function(poll) {
-	      this.poll.options.forEach((ele) => {
-	        if(ele.name == poll.option) return ele.count++;
-	      })
-	      $http.put('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id, _this.poll)
-	        .then((res) => {
-	          $route.reload();
-	        }, (err) => console.log(err))
+	      console.log(poll);
+	      if(poll === 'undefined') {
+	        console.log('pick a option');
+	      } else {
+	        this.poll.options.forEach((ele) => {
+	          if(ele.name == poll.option) return ele.count++;
+	        })
+	        $http.put('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id, _this.poll)
+	          .then((res) => {
+	            $route.reload();
+	          }, (err) => console.log(err));
+	      }
 	    }
 
 	  }]);
@@ -31337,31 +31385,46 @@
 	'use strict';
 
 	module.exports = function(app) {
-	  app.controller('MyPollsController', ['$http', function($http) {
-	    let _this = this;
+	  app.controller('MyPollsController', ['httpService', '$window', '$location',
+	    function(httpService, $window, $location) {
+	      let _this = this;
+	      const pollResource = httpService('users/', '/polls');
 
-	    _this.polls = ['polls'];
-	    -this.owner;
+	      _this.polls = ['polls'];
+	      _this.owner = $window.localStorage.name;
+	      _this.zeroPolls = false;
+	      var id;
 
-	    _this.getAllPolls = function() {
-	      $http.get('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/')
-	        .then((res) => {
-	          _this.polls = res.data.data;
-	          _this.owner = res.data.data[0]._owner[0];
-	        }, (err) => console.log(err))
-	    };
+	      _this.getPoll = function(poll) {
+	        $window.localStorage.poll = JSON.stringify(poll);
+	        $location.path('/pollview');
+	      }
 
-	    _this.removePoll = function(poll) {
-	      console.log(poll);
-	      $http.delete('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + poll._id)
-	        .then((res) => {
-	          console.log(res);
-	          _this.polls = _this.polls.filter((p) => p._id != poll._id);
-	          console.log(_this.polls);
-	        }, (err) => console.log(err))
-	    }
+	      _this.getAllPolls = function() {
+	        id = $window.localStorage.id;
+	        pollResource.getAllMyPolls(id)
+	          .then((res) => {
+	            if(!res.data.data.length) {
+	              console.log('You have no polls');
+	              _this.zeroPolls = true;
+	            } else {
+	              _this.polls = res.data.data;
+	            }
 
-	  }])
+	          }, (err) => console.log(err))
+	      };
+
+	      _this.removePoll = function(poll) {
+	        console.log(poll);
+	        pollResource.removePoll(id, poll._id)
+	          .then((res) => {
+	            console.log(res);
+	            _this.polls = _this.polls.filter((p) => p._id != poll._id);
+	            console.log(_this.polls);
+	          }, (err) => console.log(err))
+	      }
+
+	    }])
 	}
 
 
@@ -31382,7 +31445,9 @@
 	      templateUrl: './views/new-poll.html'
 	    }).when('/pollview', {
 	      templateUrl: './views/poll-view.html'
-	    })
+	    }).when('/signup', {
+	      templateUrl: './views/signup.html'
+	    });
 	  }]);
 	};
 
