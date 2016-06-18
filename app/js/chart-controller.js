@@ -6,6 +6,7 @@ module.exports = function(app) {
     _this.poll = JSON.parse($window.localStorage.poll);
     _this.labels = [];
     _this.data = [];
+    var port = process.env.PORT;
 
     function updateChart(poll) {
       _this.data = [];
@@ -18,13 +19,13 @@ module.exports = function(app) {
     updateChart(_this.poll);
 
 
-    _this.getPoll = function() {
-      $http.get('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id)
-        .then((res) => {
-          $window.localStorage.poll = JSON.stringify(res.data.data);
-          $route.reload();
-        }, (err) => console.log(err))
-    };
+    // _this.getPoll = function() {
+    //   $http.get(port+'/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id)
+    //     .then((res) => {
+    //       $window.localStorage.poll = JSON.stringify(res.data.data);
+    //       $route.reload();
+    //     }, (err) => console.log(err))
+    // };
 
     var ctx = document.getElementById("myChart");
     var myChart = new Chart(ctx, {
