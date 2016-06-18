@@ -14,6 +14,7 @@ require('./routes/users-routes')(userRouter, models);
 require('./routes/poll-routes')(pollRouter, models);
 require('./routes/login-signup')(loginRouter, models);
 
+app.use(express.static(__dirname + '/build'));
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
