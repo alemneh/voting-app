@@ -31183,6 +31183,7 @@
 	        _this.polls = res.data.data;
 	      }, function(error) {
 	        console.log(error);
+	        console.log('In here.');
 	      })
 	    }
 
