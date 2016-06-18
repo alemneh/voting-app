@@ -48,14 +48,12 @@ module.exports = (userRouter, models) => {
         });
       })
       .put(jwtAuth, (req, res) => {
-        console.log(req.params.id);
         User.findByIdAndUpdate(req.params.id, req.body, (err, user) => {
           if(err) throw err;
           res.json({message: 'Update successful!'});
         });
       })
       .delete(jwtAuth, (req, res) => {
-        console.log(req.params.id);
         User.findById(req.params.id, (err, user) => {
           user.polls.forEach((poll) => {
             Poll.findById(poll, (err, data) => {
@@ -65,7 +63,7 @@ module.exports = (userRouter, models) => {
           })
           user.remove((err, user) => {
             if(err) throw err;
-            res.json({data: 'User removed!'});
+            res.json({message: 'User removed!'});
           });
         });
       });

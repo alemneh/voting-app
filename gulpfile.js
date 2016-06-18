@@ -20,7 +20,7 @@ const sources = {
 };
 //Run mocha for tests
 gulp.task('mocha', function() {
-  return gulp.src(__dirname +'/test/rest_test.js', {read: false})
+  return gulp.src(__dirname +'/test/voting-api-test.js', {read: false})
              .pipe(mocha( {reporter: 'nyan'}));
 });
 

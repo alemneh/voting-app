@@ -7,8 +7,30 @@ a {
   background-color: red;
 }
 
-@media only screen and (min-width: 760px) {
-  
+@media only screen and (min-width: 900px) {
 
+  #signUp fieldset {
+    width: 700px;
+  }
+
+}
+
+@media only screen and (min-width: 760px) {
+
+  #navMobile  {
+    display: none;
+  }
+
+}
+
+@media only screen and (max-width: 760px) {
+
+  nav form  {
+    display: none;
+  }
+
+  #bs-example-navbar-collapse-1 ul:first-child {
+    display: none;
+  }
 
 }

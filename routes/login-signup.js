@@ -11,22 +11,18 @@ module.exports = (loginRouter, models) => {
       const authArray = new Buffer(base64ed, 'base64').toString().split(':');
       const name = authArray[0];
       const password = authArray[1];
-      console.log('Password: ' +password);
-      console.log('Name: ' +name);
-      console.log(password.length);
       User.findOne({name:name}, (err, user) => {
         if(err) throw err;
-        console.log('Before Password: ' +user.password);
         if(!user) {
           return res.json({status: 'failure', message: 'Invalid User!'});
         }
         const valid = user.compareHash(password);
-      
+
         if(!valid) {
           res.json({status: 'failure', message: 'Wrong password'});
         } else {
           res.json({
-            id: user,
+            data: user,
             token: user.generateToken()
           });
         }

@@ -31289,7 +31289,7 @@
 	        console.log('pick a option');
 	      } else {
 	        this.poll.options.forEach((ele) => {
-	          if(ele.name == poll.option) return ele.count++;
+	          if(ele.name == poll.option.name) return ele.count++;
 	        })
 	        $http.put('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id, _this.poll)
 	          .then((res) => {

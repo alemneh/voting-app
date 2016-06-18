@@ -19,7 +19,6 @@ module.exports = (pollRouter, models) => {
     })
     .post(jwtAuth, (req, res) => {
       User.findById(req.params.id, (err, user) => {
-        console.log(req.body);
         var newPoll = new Poll();
         newPoll._owner = user.name;
         newPoll.name = req.body.name;
@@ -51,7 +50,7 @@ module.exports = (pollRouter, models) => {
       console.log(req.ip);
       Poll.findByIdAndUpdate(req.params.pollId, req.body, (err, poll) => {
         if(err) throw err;
-        res.json({data: 'Poll updated!'});
+        res.json({message: 'Poll updated!'});
       });
     })
     .delete(jwtAuth, (req, res) => {
@@ -61,7 +60,7 @@ module.exports = (pollRouter, models) => {
             user.polls.pull(poll._id);
             user.save();
           })
-          res.json({data: 'Poll deleted!'});
+          res.json({message: 'Poll deleted!'});
         })
       });
     });

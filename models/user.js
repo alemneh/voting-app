@@ -17,7 +17,6 @@ module.exports = function(mongoose, models) {
 
   //userSchema.methods.hashPassword
   userSchema.methods.compareHash = function(password) {
-    console.log('Before Vassword: '+bcrypt.hashSync(this.password, bcrypt.genSaltSync(10)));
     return bcrypt.compareSync(password, this.password);
   };
 
