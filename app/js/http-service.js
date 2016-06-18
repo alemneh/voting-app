@@ -1,5 +1,6 @@
 module.exports = function(app) {
   app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
+    console.log(process.env.PORT);
     const mainRoute = process.env.PORT;
 
     function Resource(resourceName, subResource) {
