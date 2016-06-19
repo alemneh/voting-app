@@ -31032,6 +31032,7 @@
 	    mainRoute = process.env.PORT;
 	    console.log(process.env.PORT);
 
+
 	    function Resource(resourceName, subResource) {
 	      console.log(resourceName);
 	      console.log(subResource);
@@ -31080,7 +31081,7 @@
 	        }
 	      });
 	    };
-
+	    console.log();
 	    Resource.prototype.update = function(data, id) {
 	      console.log(data);
 	      return $http.put(this.resourceName + (id ? '/' + id : ''), data, {
@@ -31217,13 +31218,13 @@
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function(app) {
+	/* WEBPACK VAR INJECTION */(function(process) {module.exports = function(app) {
 	  app.factory('AuthService', ['$http', '$window', function($http, $window) {
 	    var token;
 	    var signedIn = false;
-	    var url = 'http://localhost:3000';
+	    var url = process.env.PORT || 'http://localhost:3000';
 	    var auth = {
 	      createUser(user, cb) {
 	        cb || function() {};
@@ -31266,6 +31267,7 @@
 	  }]);
 	};
 
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 7 */
@@ -31286,7 +31288,7 @@
 	        _this.polls = res.data.data;
 	      }, function(error) {
 	        console.log(error);
-	        console.log('In here.');
+	        console.log('In here!');
 	      })
 	    }
 
@@ -31388,6 +31390,7 @@
 	    let _this = this;
 	    _this.poll = JSON.parse($window.localStorage.poll);
 
+
 	    _this.updatePoll = function(poll) {
 	      console.log(poll);
 	      if(poll === 'undefined') {
@@ -31403,22 +31406,26 @@
 	      }
 	    }
 
+
 	  }]);
 	};
 
 
 /***/ },
 /* 10 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
 	module.exports = function(app) {
-	  app.controller('ChartController', ['$window', '$http', '$route', function($window, $http, $route) {
+	  app.controller('ChartController', ['$window', '$http', '$route', 'httpService',
+	    function($window, $http, $route, httpService) {
+	    let pollResource =  httpService('/polls');
 	    let _this = this;
 	    _this.poll = JSON.parse($window.localStorage.poll);
 	    _this.labels = [];
 	    _this.data = [];
+	    var port = process.env.PORT;
 
 	    function updateChart(poll) {
 	      _this.data = [];
@@ -31431,13 +31438,13 @@
 	    updateChart(_this.poll);
 
 
-	    // _this.getPoll = function() {
-	    //   $http.get('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id)
-	    //     .then((res) => {
-	    //       $window.localStorage.poll = JSON.stringify(res.data.data);
-	    //       $route.reload();
-	    //     }, (err) => console.log(err))
-	    // };
+	    _this.getPoll = function() {
+	      pollResource.getOne(_this.poll._id)
+	        .then((res) => {
+	          $window.localStorage.poll = JSON.stringify(res.data.data);
+	          $route.reload();
+	        }, (err) => console.log(err))
+	    };
 
 	    var ctx = document.getElementById("myChart");
 	    var myChart = new Chart(ctx, {
@@ -31482,6 +31489,7 @@
 	  }])
 	}
 
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 11 */
