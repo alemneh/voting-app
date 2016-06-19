@@ -24,8 +24,8 @@ module.exports = function(app) {
           console.log(res.data.message);
         } else {
           console.log('hit');
-          _this.userId = $window.localStorage.id = res.data._id;
-          _this.userName = $window.localStorage.name = res.data.name;
+          _this.userId = $window.localStorage.id = res.data.data._id;
+          _this.userName = $window.localStorage.name = res.data.data.name;
           _this.signedIn = true;
           _this.signedOut = false;
         }
