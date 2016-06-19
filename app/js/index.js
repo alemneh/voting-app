@@ -23,7 +23,7 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
  function(httpService, AuthService, $location, $window) {
 
    const _this = this;
-   const pollResource = httpService('users/', '/polls');
+   const pollResource = httpService('/users/', '/polls');
 
   // Poll Constructor
    function Poll(name) {

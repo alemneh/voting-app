@@ -3,6 +3,10 @@ logs
 *.log
 npm-debug.log*
 
+server.crt
+server.csr
+server.key
+
 # Runtime data
 pids
 *.pid

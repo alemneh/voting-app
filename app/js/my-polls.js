@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.controller('MyPollsController', ['httpService', '$window', '$location',
     function(httpService, $window, $location) {
       let _this = this;
-      const pollResource = httpService('users/', '/polls');
+      const pollResource = httpService('/users/', '/polls');
 
       _this.polls = ['polls'];
       _this.owner = $window.localStorage.name;
