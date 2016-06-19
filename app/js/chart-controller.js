@@ -5,6 +5,7 @@ module.exports = function(app) {
     function($window, $http, $route, httpService) {
     let pollResource =  httpService('/polls');
     let _this = this;
+    console.log(_this.poll);
     _this.poll = JSON.parse($window.localStorage.poll);
     _this.labels = [];
     _this.data = [];
@@ -17,17 +18,17 @@ module.exports = function(app) {
         _this.data.push(ele.count);
       })
     }
-
+    console.log(_this.poll);
     updateChart(_this.poll);
 
 
-    // _this.getPoll = function() {
-    //   pollResource.getOne(_this.poll._id)
-    //     .then((res) => {
-    //       $window.localStorage.poll = JSON.stringify(res.data.data);
-    //       $route.reload();
-    //     }, (err) => console.log(err))
-    // };
+    _this.getPoll = function() {
+      pollResource.getOne(_this.poll._id)
+        .then((res) => {
+          $window.localStorage.poll = JSON.stringify(res.data.data);
+          $route.reload();
+        }, (err) => console.log(err))
+    };
 
     var ctx = document.getElementById("myChart");
     var myChart = new Chart(ctx, {
