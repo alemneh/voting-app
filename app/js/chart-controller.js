@@ -9,7 +9,7 @@ module.exports = function(app) {
     _this.poll = JSON.parse($window.localStorage.poll);
     _this.labels = [];
     _this.data = [];
-    var port = process.env.PORT;
+  
 
     function updateChart(poll) {
       _this.data = [];
@@ -18,7 +18,7 @@ module.exports = function(app) {
         _this.data.push(ele.count);
       })
     }
-    console.log(_this.poll);
+
     updateChart(_this.poll);
 
 
