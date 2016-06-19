@@ -12,7 +12,7 @@ module.exports = function(app) {
     }
 
     Resource.prototype.getAll = function() {
-      return $http.get(mainRoute + this.resourceName);
+      return $http.get(process.env.PORT + this.resourceName);
     };
 
     Resource.prototype.getAllMyPolls = function(id) {
