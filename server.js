@@ -8,7 +8,6 @@ const pollRouter = express.Router();
 const loginRouter = express.Router();
 var port = process.env.PORT || 3000;
 
-var port = process.env.PORT || 3000;
 
 
 require('./routes/users-routes')(userRouter, models);
