@@ -7,6 +7,7 @@ const userRouter = express.Router();
 const pollRouter = express.Router();
 const loginRouter = express.Router();
 
+var port = process.env.PORT || 3000;
 
 
 require('./routes/users-routes')(userRouter, models);
@@ -30,4 +31,4 @@ app.use('/', loginRouter, userRouter);
 app.use('/users', pollRouter);
 
 
-app.listen(3000, () => {console.log('port up on 3000');});
+app.listen(port, () => {console.log('port up on '+ port);});
