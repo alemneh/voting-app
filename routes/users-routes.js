@@ -23,7 +23,7 @@ module.exports = (userRouter, models) => {
       });
     });
 
-    userRouter.route('/polls')
+  userRouter.route('/polls')
       .get((req, res) => {
         Poll.find({}, (err, polls) => {
           if(err) throw err;
@@ -31,14 +31,31 @@ module.exports = (userRouter, models) => {
         });
       })
 
-    userRouter.route('/polls/:id')
+  userRouter.route('/polls/:id')
+      .get((req, res) => {
+        Poll.findById(req.params.pollId, (err, poll) => {
+          if(err) throw err;
+          res.json({data: poll});
+        });
+      })
       .put((req, res) => {
-        console.log(req.params.Id);
-        Poll.findByIdAndUpdate(req.params.Id, req.body, (err, poll) => {
+        console.log(req.ip);
+        Poll.findByIdAndUpdate(req.params.pollId, req.body, (err, poll) => {
           if(err) throw err;
           res.json({message: 'Poll updated!'});
         });
       })
+      .delete(jwtAuth, (req, res) => {
+        Poll.findById(req.params.pollId, (err, poll) => {
+          poll.remove((err, poll) => {
+            User.findById(req.params.id, (err, user) => {
+              user.polls.pull(poll._id);
+              user.save();
+            })
+            res.json({message: 'Poll deleted!'});
+          })
+        });
+      });
 
     userRouter.route('/users')
       .get(jwtAuth, (req, res) => {
