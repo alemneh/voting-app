@@ -31029,7 +31029,7 @@
 	/* WEBPACK VAR INJECTION */(function(process) {module.exports = function(app) {
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
 	    var mainRoute = process.env.PORT;
-	    console.log(mainRoute);
+	    console.log(process.env.PORT);
 
 	    function Resource(resourceName, subResource) {
 	      console.log(resourceName);
