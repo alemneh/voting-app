@@ -53,10 +53,10 @@ module.exports = function(app) {
         }
       });
     };
-
+    console.log();
     Resource.prototype.update = function(data, id) {
       console.log(data);
-      return $http.put(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
+      return $http.put(this.resourceName + (id ? '/' + id : ''), data, {
         headers: {
           token: AuthService.getToken()
         }
