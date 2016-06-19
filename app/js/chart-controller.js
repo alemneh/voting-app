@@ -21,13 +21,13 @@ module.exports = function(app) {
     updateChart(_this.poll);
 
 
-    _this.getPoll = function() {
-      pollResource.getOne(_this.poll._id)
-        .then((res) => {
-          $window.localStorage.poll = JSON.stringify(res.data.data);
-          $route.reload();
-        }, (err) => console.log(err))
-    };
+    // _this.getPoll = function() {
+    //   pollResource.getOne(_this.poll._id)
+    //     .then((res) => {
+    //       $window.localStorage.poll = JSON.stringify(res.data.data);
+    //       $route.reload();
+    //     }, (err) => console.log(err))
+    // };
 
     var ctx = document.getElementById("myChart");
     var myChart = new Chart(ctx, {
