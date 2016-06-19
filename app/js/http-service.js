@@ -1,6 +1,6 @@
 module.exports = function(app) {
   app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
-    const mainRoute = process.env.PORT || 'http://localhost:3000/';
+    const mainRoute = process.env.PORT || 'http://localhost:6000';
     console.log(mainRoute);
 
     function Resource(resourceName, subResource) {

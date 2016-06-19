@@ -31028,7 +31028,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(process) {module.exports = function(app) {
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
-	    const mainRoute = process.env.PORT || 'http://localhost:3000/';
+	    const mainRoute = process.env.PORT || 'http://localhost:6000';
 	    console.log(mainRoute);
 
 	    function Resource(resourceName, subResource) {
@@ -31277,7 +31277,7 @@
 	  app.controller('HomeController', ['httpService', 'AuthService', '$window', '$location',
 	  function(httpService, AuthService, $window, $location) {
 	    let _this = this;
-	    let pollResource = httpService('polls');
+	    let pollResource = httpService('/polls');
 	    _this.polls = ['polls'];
 
 	    _this.getPolls = function() {
