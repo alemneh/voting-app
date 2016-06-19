@@ -1,7 +1,9 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('ChartController', ['$window', '$http', '$route', function($window, $http, $route) {
+  app.controller('ChartController', ['$window', '$http', '$route', 'httpService',
+    function($window, $http, $route, httpService) {
+    let pollResource =  httpService('/polls');
     let _this = this;
     _this.poll = JSON.parse($window.localStorage.poll);
     _this.labels = [];
@@ -19,13 +21,13 @@ module.exports = function(app) {
     updateChart(_this.poll);
 
 
-    // _this.getPoll = function() {
-    //   $http.get(port+'/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id)
-    //     .then((res) => {
-    //       $window.localStorage.poll = JSON.stringify(res.data.data);
-    //       $route.reload();
-    //     }, (err) => console.log(err))
-    // };
+    _this.getPoll = function() {
+      pollResource.getOne(_this.poll._id)
+        .then((res) => {
+          $window.localStorage.poll = JSON.stringify(res.data.data);
+          $route.reload();
+        }, (err) => console.log(err))
+    };
 
     var ctx = document.getElementById("myChart");
     var myChart = new Chart(ctx, {

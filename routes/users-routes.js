@@ -39,6 +39,7 @@ module.exports = (userRouter, models) => {
           res.json({message: 'Poll updated!'});
         });
       })
+
     userRouter.route('/users')
       .get(jwtAuth, (req, res) => {
         User.find({}, (err, users) => {
