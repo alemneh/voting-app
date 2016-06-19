@@ -33,7 +33,7 @@ module.exports = (userRouter, models) => {
 
     userRouter.route('/polls/:id')
       .put((req, res) => {
-        console.log(req.ip);
+        console.log(req.params.pollId);
         Poll.findByIdAndUpdate(req.params.pollId, req.body, (err, poll) => {
           if(err) throw err;
           res.json({message: 'Poll updated!'});
