@@ -31045,7 +31045,7 @@
 	    };
 
 	    Resource.prototype.getAllMyPolls = function(id) {
-	      return $http.get(mainRoute + this.resourceName + id + this.subResource, {
+	      return $http.get(this.resourceName + id + this.subResource, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31055,7 +31055,7 @@
 
 
 	    Resource.prototype.getOne = function(id) {
-	      return $http.get(mainRoute + this.resourceName + (id ? '/' + id : ''), {
+	      return $http.get(this.resourceName + (id ? '/' + id : ''), {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31063,7 +31063,7 @@
 	    };
 
 	    Resource.prototype.getOneSubResource = function(id, subResource) {
-	      return $http.get(mainRoute + this.resourceName + '/' + id + '/' + subResource, {
+	      return $http.get(this.resourceName + '/' + id + '/' + subResource, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31071,11 +31071,11 @@
 	    }
 
 	    Resource.prototype.create = function(data) {
-	      return $http.post(mainRoute + this.resourceName, data);
+	      return $http.post(this.resourceName, data);
 	    };
 
 	    Resource.prototype.createPoll = function(data, id) {
-	      return $http.post(mainRoute + this.resourceName + id + this.subResource, data, {
+	      return $http.post(this.resourceName + id + this.subResource, data, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31092,7 +31092,7 @@
 	    };
 
 	    Resource.prototype.remove = function(id) {
-	      return $http.delete(mainRoute + this.resourceName + (id ? '/' + id : ''), {
+	      return $http.delete(this.resourceName + (id ? '/' + id : ''), {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31100,7 +31100,7 @@
 	    }
 
 	    Resource.prototype.removePoll = function(id, pollId) {
-	      return $http.delete(mainRoute + this.resourceName + id + this.subResource + '/'+ pollId, {
+	      return $http.delete(this.resourceName + id + this.subResource + '/'+ pollId, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
