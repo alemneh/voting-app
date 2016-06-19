@@ -53,7 +53,7 @@
 
 	  // SERVICES
 	__webpack_require__(4)(app);
-	__webpack_require__(6)(app);
+	__webpack_require__(5)(app);
 
 	  // CONTROLLERS
 	__webpack_require__(7)(app);
@@ -69,7 +69,7 @@
 	 function(httpService, AuthService, $location, $window) {
 
 	   const _this = this;
-	   const pollResource = httpService('users/', '/polls');
+	   const pollResource = httpService('/users/', '/polls');
 
 	  // Poll Constructor
 	   function Poll(name) {
@@ -31024,13 +31024,13 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {module.exports = function(app) {
-	  var mainRoute;
+	module.exports = function(app) {
+
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
-	    mainRoute = process.env.PORT;
-	    console.log(process.env.PORT);
+	    var mainRoute = 'http://localhost:3000';
+	    console.log(mainRoute);
 
 
 	    function Resource(resourceName, subResource) {
@@ -31041,11 +31041,11 @@
 	    }
 
 	    Resource.prototype.getAll = function() {
-	      return $http.get(this.resourceName);
+	      return $http.get(mainRoute + this.resourceName);
 	    };
 
 	    Resource.prototype.getAllMyPolls = function(id) {
-	      return $http.get(this.resourceName + id + this.subResource, {
+	      return $http.get(mainRoute + this.resourceName + id + this.subResource, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31055,7 +31055,7 @@
 
 
 	    Resource.prototype.getOne = function(id) {
-	      return $http.get(this.resourceName + (id ? '/' + id : ''), {
+	      return $http.get(mainRoute + this.resourceName + (id ? '/' + id : ''), {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31063,7 +31063,7 @@
 	    };
 
 	    Resource.prototype.getOneSubResource = function(id, subResource) {
-	      return $http.get(this.resourceName + '/' + id + '/' + subResource, {
+	      return $http.get(mainRoute + this.resourceName + '/' + id + '/' + subResource, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31071,20 +31071,21 @@
 	    }
 
 	    Resource.prototype.create = function(data) {
-	      return $http.post(this.resourceName, data);
+	      return $http.post(mainRoute + this.resourceName, data);
 	    };
 
 	    Resource.prototype.createPoll = function(data, id) {
-	      return $http.post(this.resourceName + id + this.subResource, data, {
+	      return $http.post(mainRoute + this.resourceName + id + this.subResource, data, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
 	      });
 	    };
-	    console.log();
+
 	    Resource.prototype.update = function(data, id) {
 	      console.log(data);
-	      return $http.put(this.resourceName + (id ? '/' + id : ''), data, {
+	        console.log(mainRoute);
+	      return $http.put(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31092,7 +31093,7 @@
 	    };
 
 	    Resource.prototype.remove = function(id) {
-	      return $http.delete(this.resourceName + (id ? '/' + id : ''), {
+	      return $http.delete(mainRoute + this.resourceName + (id ? '/' + id : ''), {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31100,7 +31101,7 @@
 	    }
 
 	    Resource.prototype.removePoll = function(id, pollId) {
-	      return $http.delete(this.resourceName + id + this.subResource + '/'+ pollId, {
+	      return $http.delete(mainRoute + this.resourceName + id + this.subResource + '/'+ pollId, {
 	        headers: {
 	          token: AuthService.getToken()
 	        }
@@ -31114,10 +31115,62 @@
 	  }]);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {module.exports = function(app) {
+	  app.factory('AuthService', ['$http', '$window', function($http, $window) {
+	    var token;
+	    var signedIn = false;
+	    var url = process.env.PORT || 'http://localhost:3000';
+	    var auth = {
+	      createUser(user, cb) {
+	        cb || function() {};
+	        $http.post(url + '/signup', user)
+	          .then((res) => {
+	            console.log(res);
+	            cb(null, res);
+	          }, (err) => {
+	            cb(err);
+	          });
+	      },
+	      getToken() {
+	        return token || $window.localStorage.token;
+	      },
+	      signOut(cb) {
+	        token = null;
+	        $window.localStorage.removeItem('token');
+	        if (cb) cb();
+	      },
+	      signIn(user, cb) {
+	        cb || function() {};
+	        $http.get(url + '/login', {
+	          headers: {
+	           'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
+	         }
+	       }).then((res) => {
+	         console.log(res);
+	         token = $window.localStorage.token = res.data.token;
+	         if(res.data.status == 'failure') {
+	           console.log('In');
+	           $window.localStorage.removeItem('token');
+	         }
+	         cb(null, res);
+	       }, (err) => {
+	         cb(err);
+	       });
+	     }
+	    };
+	    return auth;
+	  }]);
+	};
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ },
+/* 6 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -31215,59 +31268,6 @@
 	};
 	process.umask = function() { return 0; };
 
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {module.exports = function(app) {
-	  app.factory('AuthService', ['$http', '$window', function($http, $window) {
-	    var token;
-	    var signedIn = false;
-	    var url = process.env.PORT || 'http://localhost:3000';
-	    var auth = {
-	      createUser(user, cb) {
-	        cb || function() {};
-	        $http.post(url + '/signup', user)
-	          .then((res) => {
-	            console.log(res);
-	            cb(null, res);
-	          }, (err) => {
-	            cb(err);
-	          });
-	      },
-	      getToken() {
-	        return token || $window.localStorage.token;
-	      },
-	      signOut(cb) {
-	        token = null;
-	        $window.localStorage.removeItem('token');
-	        if (cb) cb();
-	      },
-	      signIn(user, cb) {
-	        cb || function() {};
-	        $http.get(url + '/login', {
-	          headers: {
-	           'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
-	         }
-	       }).then((res) => {
-	         console.log(res);
-	         token = $window.localStorage.token = res.data.token;
-	         if(res.data.status == 'failure') {
-	           console.log('In');
-	           $window.localStorage.removeItem('token');
-	         }
-	         cb(null, res);
-	       }, (err) => {
-	         cb(err);
-	       });
-	     }
-	    };
-	    return auth;
-	  }]);
-	};
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 7 */
@@ -31490,7 +31490,7 @@
 	  }])
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 /* 11 */
@@ -31502,7 +31502,7 @@
 	  app.controller('MyPollsController', ['httpService', '$window', '$location',
 	    function(httpService, $window, $location) {
 	      let _this = this;
-	      const pollResource = httpService('users/', '/polls');
+	      const pollResource = httpService('/users/', '/polls');
 
 	      _this.polls = ['polls'];
 	      _this.owner = $window.localStorage.name;
