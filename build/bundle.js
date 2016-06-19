@@ -31029,7 +31029,8 @@
 	module.exports = function(app) {
 
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
-	    var mainRoute = 'http://localhost:3000';
+	    // var mainRoute = 'http://localhost:3000';
+	    var mainRoute = 'https://poll-city.herokuapp.com';
 	    console.log(mainRoute);
 
 
@@ -31083,8 +31084,6 @@
 	    };
 
 	    Resource.prototype.update = function(data, id) {
-	      console.log(data);
-	        console.log(mainRoute);
 	      return $http.put(mainRoute + this.resourceName + (id ? '/' + id : ''), data, {
 	        headers: {
 	          token: AuthService.getToken()
