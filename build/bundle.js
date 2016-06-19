@@ -31360,8 +31360,9 @@
 	'use strict';
 
 	module.exports = function(app) {
-	  app.controller('PollController', ['$window', '$location', '$http', '$route',
-	  function($window, $location, $http, $route) {
+	  app.controller('PollController', ['$window', '$location', '$http', '$route', 'httpService',
+	  function($window, $location, $http, $route, httpService) {
+	    let pollResource = httpService('/polls');
 	    function Poll(name) {
 	      this.name = name;
 	      this.options = [];
@@ -31395,7 +31396,7 @@
 	        this.poll.options.forEach((ele) => {
 	          if(ele.name == poll.option.name) return ele.count++;
 	        })
-	        $http.put('http://localhost:3000/users/5753835b5aa378cf04a5ab9b/polls/' + _this.poll._id, _this.poll)
+	        pollResource.update(_this.poll, _this.poll._id)
 	          .then((res) => {
 	            $route.reload();
 	          }, (err) => console.log(err));
