@@ -31027,8 +31027,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {module.exports = function(app) {
+	  var mainRoute;
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
-	    var mainRoute = process.env.PORT;
+	    mainRoute = process.env.PORT;
 	    console.log(process.env.PORT);
 
 	    function Resource(resourceName, subResource) {
@@ -31039,7 +31040,7 @@
 	    }
 
 	    Resource.prototype.getAll = function() {
-	      return $http.get(process.env.PORT + this.resourceName);
+	      return $http.get(this.resourceName);
 	    };
 
 	    Resource.prototype.getAllMyPolls = function(id) {
