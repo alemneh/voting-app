@@ -1,6 +1,9 @@
 'use strict';
 const jwtAuth = require('../lib/auth.js');
-
+var getClientIp = function(req) {
+    return (req.headers["X-Forwarded-For"] ||req.headers["x-forwarded-for"] ||'').split(',')[0]
+    ||req.client.remoteAddress;
+};
 module.exports = (userRouter, models) => {
   const User = models.User;
   const Poll = models.Poll;
@@ -39,11 +42,12 @@ module.exports = (userRouter, models) => {
         });
       })
       .put((req, res) => {
+
         Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
           if(err) throw err;
           res.json({
             message: 'Poll updated!',
-            ip: req.ips
+            ip: getClientIp(req)
           });
         });
       })
