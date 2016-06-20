@@ -39,12 +39,12 @@ module.exports = (userRouter, models) => {
         });
       })
       .put((req, res) => {
-        console.log(req.ip);
+        console.log(req.ips);
         Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
           if(err) throw err;
           res.json({
             message: 'Poll updated!',
-            ip: req.ip
+            ip: req.ips
           });
         });
       })
