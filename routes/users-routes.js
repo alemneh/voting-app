@@ -42,7 +42,10 @@ module.exports = (userRouter, models) => {
         console.log(req.ip);
         Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
           if(err) throw err;
-          res.json({message: 'Poll updated!'});
+          res.json({
+            message: 'Poll updated!',
+            ip: req.ip
+          });
         });
       })
       .delete(jwtAuth, (req, res) => {
