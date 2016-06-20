@@ -43,22 +43,25 @@ module.exports = (userRouter, models) => {
       })
       .put((req, res) => {
 
-        Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
+        Poll.findById(req.params.id, (err, poll) => {
           if(err) throw err;
           var ipForVote = getClientIp(req);
           if(!poll.ipsVoted.indexOf(ipForVote)) {
             res.json({message:'user-or-ip-voted","You can only vote once a poll.'})
           }
           else {
-            poll.ipsVoted.push(ipForVote);
-            poll.save((err) => {
+            Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
               if(err) throw err;
-              res.json({
-                message: 'Poll updated!',
-                ip: getClientIp(req),
-                data: poll
+              poll.ipsVoted.push(ipForVote);
+              poll.save((err) => {
+                if(err) throw err;
+                res.json({
+                  message: 'Poll updated!',
+                  ip: getClientIp(req),
+                  data: poll
+                });
               });
-            });
+            })
           }
         });
       })
