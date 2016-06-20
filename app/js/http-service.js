@@ -7,8 +7,7 @@ module.exports = function(app) {
 
 
     function Resource(resourceName, subResource) {
-      console.log(resourceName);
-      console.log(subResource);
+
       this.resourceName = resourceName;
       this.subResource = subResource;
     }

@@ -5,7 +5,6 @@ module.exports = function(app) {
     function($window, $http, $route, httpService) {
     let pollResource =  httpService('/polls');
     let _this = this;
-    console.log(_this.poll);
     _this.poll = JSON.parse($window.localStorage.poll);
     _this.labels = [];
     _this.data = [];
@@ -18,7 +17,6 @@ module.exports = function(app) {
         _this.data.push(ele.count);
       })
     }
-    console.log(_this.poll);
     updateChart(_this.poll);
 
 

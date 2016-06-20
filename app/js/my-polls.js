@@ -21,7 +21,6 @@ module.exports = function(app) {
         pollResource.getAllMyPolls(id)
           .then((res) => {
             if(!res.data.data.length) {
-              console.log('You have no polls');
               _this.zeroPolls = true;
             } else {
               _this.polls = res.data.data;
@@ -31,12 +30,10 @@ module.exports = function(app) {
       };
 
       _this.removePoll = function(poll) {
-        console.log(poll);
         pollResource.removePoll(id, poll._id)
           .then((res) => {
             console.log(res);
             _this.polls = _this.polls.filter((p) => p._id != poll._id);
-            console.log(_this.polls);
           }, (err) => console.log(err))
       }
 

@@ -32,7 +32,6 @@ module.exports = function(app) {
          console.log(res);
          token = $window.localStorage.token = res.data.token;
          if(res.data.status == 'failure') {
-           console.log('In');
            $window.localStorage.removeItem('token');
          }
          cb(null, res);

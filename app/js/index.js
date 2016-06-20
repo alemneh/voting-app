@@ -67,7 +67,6 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
      options.forEach((ele) => {
        newPoll.addOp(ele);
      });
-     console.log(id);
      pollResource.createPoll(newPoll, id).then((res) => {
        console.log(res);
        $location.path('/mypolls');
