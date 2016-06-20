@@ -1,6 +1,9 @@
 'use strict';
 const jwtAuth = require('../lib/auth.js');
-
+var getClientIp = function(req) {
+    return (req.headers["X-Forwarded-For"] ||req.headers["x-forwarded-for"] ||'').split(',')[0]
+    ||req.client.remoteAddress;
+};
 module.exports = (userRouter, models) => {
   const User = models.User;
   const Poll = models.Poll;
@@ -39,13 +42,26 @@ module.exports = (userRouter, models) => {
         });
       })
       .put((req, res) => {
-        console.log(req.ips);
-        Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
+        Poll.findById(req.params.id, (err, poll) => {
           if(err) throw err;
-          res.json({
-            message: 'Poll updated!',
-            ip: req.ips
-          });
+          var ipForVote = getClientIp(req);
+          if(!poll.ipsVoted.indexOf(ipForVote)) {
+            res.json({message:'user-or-ip-voted","You can only vote once a poll.'})
+          }
+          else {
+            Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
+              if(err) throw err;
+              poll.ipsVoted.push(ipForVote);
+              poll.save((err) => {
+                if(err) throw err;
+                res.json({
+                  message: 'Poll updated!',
+                  ip: getClientIp(req),
+                  data: poll
+                });
+              });
+            })
+          }
         });
       })
       .delete(jwtAuth, (req, res) => {
@@ -71,7 +87,6 @@ module.exports = (userRouter, models) => {
     userRouter.route('/users/:id')
       .get(jwtAuth, (req, res) => {
         User.findOne({_id:req.params.id}, (err, user) => {
-          console.log(err);
           if(err) throw err;
           res.json({data: user});
         });
