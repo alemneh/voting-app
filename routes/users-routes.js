@@ -39,7 +39,6 @@ module.exports = (userRouter, models) => {
         });
       })
       .put((req, res) => {
-        console.log(req.ip);
         Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
           if(err) throw err;
           res.json({
@@ -71,7 +70,6 @@ module.exports = (userRouter, models) => {
     userRouter.route('/users/:id')
       .get(jwtAuth, (req, res) => {
         User.findOne({_id:req.params.id}, (err, user) => {
-          console.log(err);
           if(err) throw err;
           res.json({data: user});
         });

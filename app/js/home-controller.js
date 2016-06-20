@@ -13,7 +13,6 @@ module.exports = function(app) {
         _this.polls = res.data.data;
       }, function(error) {
         console.log(error);
-        console.log('In here!');
       })
     }
 

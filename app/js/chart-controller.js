@@ -5,11 +5,10 @@ module.exports = function(app) {
     function($window, $http, $route, httpService) {
     let pollResource =  httpService('/polls');
     let _this = this;
-    console.log(_this.poll);
     _this.poll = JSON.parse($window.localStorage.poll);
     _this.labels = [];
     _this.data = [];
-  
+
 
     function updateChart(poll) {
       _this.data = [];
