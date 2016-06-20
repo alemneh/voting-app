@@ -113,7 +113,6 @@
 	     options.forEach((ele) => {
 	       newPoll.addOp(ele);
 	     });
-	     console.log(id);
 	     pollResource.createPoll(newPoll, id).then((res) => {
 	       console.log(res);
 	       $location.path('/mypolls');
@@ -31035,8 +31034,7 @@
 
 
 	    function Resource(resourceName, subResource) {
-	      console.log(resourceName);
-	      console.log(subResource);
+
 	      this.resourceName = resourceName;
 	      this.subResource = subResource;
 	    }
@@ -31153,7 +31151,6 @@
 	         console.log(res);
 	         token = $window.localStorage.token = res.data.token;
 	         if(res.data.status == 'failure') {
-	           console.log('In');
 	           $window.localStorage.removeItem('token');
 	         }
 	         cb(null, res);
@@ -31287,7 +31284,6 @@
 	        _this.polls = res.data.data;
 	      }, function(error) {
 	        console.log(error);
-	        console.log('In here!');
 	      })
 	    }
 
@@ -31325,13 +31321,11 @@
 	    };
 
 	    _this.signIn = function(user) {
-	      console.log(user);
 	      AuthService.signIn(user, (err, res) => {
 	        if(err) console.log(err);
 	        if(res.data.status == 'failure') {
 	          console.log(res.data.message);
 	        } else {
-	          console.log('hit');
 	          _this.userId = $window.localStorage.id = res.data.data._id;
 	          _this.userName = $window.localStorage.name = res.data.data.name;
 	          _this.signedIn = true;
@@ -31342,7 +31336,6 @@
 	    };
 
 	    _this.signOut = function() {
-	      console.log('hit');
 	      AuthService.signOut(() => {
 	        $window.localStorage.removeItem('name');
 	        $window.localStorage.removeItem('id');
@@ -31391,7 +31384,6 @@
 
 
 	    _this.updatePoll = function(poll) {
-	      console.log(poll);
 	      if(poll === 'undefined') {
 	        console.log('pick a option');
 	      } else {
@@ -31400,6 +31392,7 @@
 	        })
 	        pollResource.update(_this.poll, _this.poll._id)
 	          .then((res) => {
+	            console.log(res);
 	            $route.reload();
 	          }, (err) => console.log(err));
 	      }
@@ -31421,7 +31414,6 @@
 	    function($window, $http, $route, httpService) {
 	    let pollResource =  httpService('/polls');
 	    let _this = this;
-	    console.log(_this.poll);
 	    _this.poll = JSON.parse($window.localStorage.poll);
 	    _this.labels = [];
 	    _this.data = [];
@@ -31434,7 +31426,6 @@
 	        _this.data.push(ele.count);
 	      })
 	    }
-	    console.log(_this.poll);
 	    updateChart(_this.poll);
 
 
@@ -31518,7 +31509,6 @@
 	        pollResource.getAllMyPolls(id)
 	          .then((res) => {
 	            if(!res.data.data.length) {
-	              console.log('You have no polls');
 	              _this.zeroPolls = true;
 	            } else {
 	              _this.polls = res.data.data;
@@ -31528,12 +31518,10 @@
 	      };
 
 	      _this.removePoll = function(poll) {
-	        console.log(poll);
 	        pollResource.removePoll(id, poll._id)
 	          .then((res) => {
 	            console.log(res);
 	            _this.polls = _this.polls.filter((p) => p._id != poll._id);
-	            console.log(_this.polls);
 	          }, (err) => console.log(err))
 	      }
 

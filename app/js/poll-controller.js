@@ -31,7 +31,6 @@ module.exports = function(app) {
 
 
     _this.updatePoll = function(poll) {
-      console.log(poll);
       if(poll === 'undefined') {
         console.log('pick a option');
       } else {
@@ -40,6 +39,7 @@ module.exports = function(app) {
         })
         pollResource.update(_this.poll, _this.poll._id)
           .then((res) => {
+            console.log(res);
             $route.reload();
           }, (err) => console.log(err));
       }
