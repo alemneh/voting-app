@@ -31392,6 +31392,7 @@
 	        })
 	        pollResource.update(_this.poll, _this.poll._id)
 	          .then((res) => {
+	            console.log(res);
 	            $route.reload();
 	          }, (err) => console.log(err));
 	      }
