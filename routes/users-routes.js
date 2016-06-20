@@ -55,7 +55,8 @@ module.exports = (userRouter, models) => {
               if(err) throw err;
               res.json({
                 message: 'Poll updated!',
-                ip: getClientIp(req)
+                ip: getClientIp(req),
+                data: poll
               });
             });
           }
