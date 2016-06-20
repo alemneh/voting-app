@@ -43,7 +43,7 @@ module.exports = (userRouter, models) => {
           if(err) throw err;
           res.json({
             message: 'Poll updated!',
-            ip: req.connection.httpHeaders['x-forwarded-for']
+            ip: req.ips
           });
         });
       })
