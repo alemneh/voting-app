@@ -32,7 +32,7 @@ module.exports = function(app) {
 
 
     _this.updatePoll = function(poll) {
-      if(poll === 'undefined') {
+      if(poll == 'undefined') {
         $window.alert('pick a option');
       } else {
         this.poll.options.forEach((ele) => {

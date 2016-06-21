@@ -114,7 +114,6 @@
 	       newPoll.addOp(ele);
 	     });
 	     pollResource.createPoll(newPoll, id).then((res) => {
-	       console.log(res);
 	       $location.path('/mypolls');
 	     });
 	   };
@@ -31030,7 +31029,6 @@
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
 	    // var mainRoute = 'http://localhost:3000';
 	    var mainRoute = 'https://poll-city.herokuapp.com';
-	    console.log(mainRoute);
 
 
 	    function Resource(resourceName, subResource) {
@@ -31127,7 +31125,6 @@
 	        cb || function() {};
 	        $http.post(url + '/signup', user)
 	          .then((res) => {
-	            console.log(res);
 	            cb(null, res);
 	          }, (err) => {
 	            cb(err);
@@ -31148,7 +31145,6 @@
 	           'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
 	         }
 	       }).then((res) => {
-	         console.log(res);
 	         token = $window.localStorage.token = res.data.token;
 	         if(res.data.status == 'failure') {
 	           $window.localStorage.removeItem('token');
@@ -31385,19 +31381,18 @@
 
 
 	    _this.updatePoll = function(poll) {
-	      if(poll === 'undefined') {
-	        console.log('pick a option');
+	      if(poll == 'undefined') {
+	        $window.alert('pick a option');
 	      } else {
 	        this.poll.options.forEach((ele) => {
 	          if(ele.name == poll.option.name) return ele.count++;
 	        })
 	        pollResource.update(_this.poll, _this.poll._id)
 	          .then((res) => {
-	              console.log(res);
 	              $route.reload();
 	          }, (err) => {
 	            $window.alert(err.data.message);
-	            console.log('hit');
+
 	            console.log(err);
 
 	          });
@@ -31526,7 +31521,6 @@
 	      _this.removePoll = function(poll) {
 	        pollResource.removePoll(id, poll._id)
 	          .then((res) => {
-	            console.log(res);
 	            _this.polls = _this.polls.filter((p) => p._id != poll._id);
 	          }, (err) => console.log(err))
 	      }
