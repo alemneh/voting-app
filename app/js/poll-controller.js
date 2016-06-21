@@ -32,6 +32,7 @@ module.exports = function(app) {
 
 
     _this.updatePoll = function(poll) {
+      console.log(poll);
       if(poll == 'undefined') {
         console.log('hit');
         $window.alert('pick a option');
