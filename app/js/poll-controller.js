@@ -27,7 +27,7 @@ module.exports = function(app) {
 
 
     let _this = this;
-    _this.voted = false;
+    _this.voted = true;
     _this.poll = JSON.parse($window.localStorage.poll);
 
 
