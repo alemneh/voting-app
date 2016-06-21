@@ -40,15 +40,12 @@ module.exports = function(app) {
         })
         pollResource.update(_this.poll, _this.poll._id)
           .then((res) => {
-            if(res.headers.statusText == 'Forbidden') {
-              _this.voted = true;
-            }
-            else {
               console.log(res);
               $route.reload();
-            }
-
-          }, (err) => console.log(err));
+          }, (err) => {
+            console.log(err);
+            _this.voted = true;
+          });
       }
     }
 
