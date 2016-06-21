@@ -33,18 +33,17 @@ module.exports = function(app) {
 
     _this.updatePoll = function(poll) {
       if(poll === 'undefined') {
-        console.log('pick a option');
+        $window.alert('pick a option');
       } else {
         this.poll.options.forEach((ele) => {
           if(ele.name == poll.option.name) return ele.count++;
         })
         pollResource.update(_this.poll, _this.poll._id)
           .then((res) => {
-              console.log(res);
               $route.reload();
           }, (err) => {
             $window.alert(err.data.message);
-            console.log('hit');
+
             console.log(err);
 
           });

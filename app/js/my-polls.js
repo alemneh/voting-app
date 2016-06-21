@@ -32,7 +32,6 @@ module.exports = function(app) {
       _this.removePoll = function(poll) {
         pollResource.removePoll(id, poll._id)
           .then((res) => {
-            console.log(res);
             _this.polls = _this.polls.filter((p) => p._id != poll._id);
           }, (err) => console.log(err))
       }

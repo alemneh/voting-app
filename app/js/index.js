@@ -68,7 +68,6 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
        newPoll.addOp(ele);
      });
      pollResource.createPoll(newPoll, id).then((res) => {
-       console.log(res);
        $location.path('/mypolls');
      });
    };

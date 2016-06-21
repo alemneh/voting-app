@@ -8,7 +8,6 @@ module.exports = function(app) {
         cb || function() {};
         $http.post(url + '/signup', user)
           .then((res) => {
-            console.log(res);
             cb(null, res);
           }, (err) => {
             cb(err);
@@ -29,7 +28,6 @@ module.exports = function(app) {
            'authorization': 'Basic ' + btoa(user.username + ':' + user.password)
          }
        }).then((res) => {
-         console.log(res);
          token = $window.localStorage.token = res.data.token;
          if(res.data.status == 'failure') {
            $window.localStorage.removeItem('token');
