@@ -1,6 +1,6 @@
 <div data-ng-controller="PollController as pollCtrl"class="container">
   <!-- Modal if ip address voted before -->
-  <div data-ng-if="pollCtrl.voted" class="modal">
+  <div data-ng-show="pollCtrl.voted" class="modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
