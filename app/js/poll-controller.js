@@ -43,8 +43,10 @@ module.exports = function(app) {
               console.log(res);
               $route.reload();
           }, (err) => {
-            console.log(err);
             _this.voted = true;
+            console.log('hit');
+            console.log(err);
+
           });
       }
     }
