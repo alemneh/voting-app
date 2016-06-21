@@ -43,7 +43,7 @@ module.exports = function(app) {
               console.log(res);
               $route.reload();
           }, (err) => {
-            $window.alert(res.data.message);
+            $window.alert(err.data.message);
             console.log('hit');
             console.log(err);
 
