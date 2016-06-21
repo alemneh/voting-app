@@ -40,7 +40,7 @@ module.exports = function(app) {
         })
         pollResource.update(_this.poll, _this.poll._id)
           .then((res) => {
-            if(res.headers.status == 403) {
+            if(res.headers.statusText == 'Forbidden') {
               _this.voted = true;
             }
             else {
