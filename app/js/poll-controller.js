@@ -27,6 +27,7 @@ module.exports = function(app) {
 
 
     let _this = this;
+    _this.voted = false;
     _this.poll = JSON.parse($window.localStorage.poll);
 
 
@@ -39,8 +40,14 @@ module.exports = function(app) {
         })
         pollResource.update(_this.poll, _this.poll._id)
           .then((res) => {
-            console.log(res);
-            $route.reload();
+            if(res.headers.status == 403) {
+              _this.voted = true;
+            }
+            else {
+              console.log(res);
+              $route.reload();
+            }
+
           }, (err) => console.log(err));
       }
     }

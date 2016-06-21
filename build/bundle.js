@@ -31380,6 +31380,7 @@
 
 
 	    let _this = this;
+	    _this.voted = false;
 	    _this.poll = JSON.parse($window.localStorage.poll);
 
 
@@ -31392,8 +31393,14 @@
 	        })
 	        pollResource.update(_this.poll, _this.poll._id)
 	          .then((res) => {
-	            console.log(res);
-	            $route.reload();
+	            if(res.headers.status == 403) {
+	              _this.voted = true;
+	            }
+	            else {
+	              console.log(res);
+	              $route.reload();
+	            }
+
 	          }, (err) => console.log(err));
 	      }
 	    }
@@ -31405,9 +31412,9 @@
 
 /***/ },
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	'use strict';
 
 	module.exports = function(app) {
 	  app.controller('ChartController', ['$window', '$http', '$route', 'httpService',
@@ -31417,7 +31424,7 @@
 	    _this.poll = JSON.parse($window.localStorage.poll);
 	    _this.labels = [];
 	    _this.data = [];
-	    var port = process.env.PORT;
+
 
 	    function updateChart(poll) {
 	      _this.data = [];
@@ -31426,6 +31433,7 @@
 	        _this.data.push(ele.count);
 	      })
 	    }
+
 	    updateChart(_this.poll);
 
 
@@ -31480,7 +31488,6 @@
 	  }])
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 /* 11 */

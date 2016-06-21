@@ -1,4 +1,21 @@
 <div data-ng-controller="PollController as pollCtrl"class="container">
+  <!-- Modal if ip address voted before -->
+  <div data-ng-if="pollCtrl.voted" class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">One vote!</h4>
+        </div>
+        <div class="modal-body">
+          <p>"user-or-ip-voted",You can only vote once a poll./p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-6">
     <form data-ng-submit="pollCtrl.updatePoll(poll)" class="form-horizontal">

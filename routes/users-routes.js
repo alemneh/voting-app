@@ -4,6 +4,7 @@ var getClientIp = function(req) {
     return (req.headers["X-Forwarded-For"] ||req.headers["x-forwarded-for"] ||'').split(',')[0]
     ||req.client.remoteAddress;
 };
+
 module.exports = (userRouter, models) => {
   const User = models.User;
   const Poll = models.Poll;
@@ -46,7 +47,7 @@ module.exports = (userRouter, models) => {
           if(err) throw err;
           var ipForVote = getClientIp(req);
           if(!poll.ipsVoted.indexOf(ipForVote)) {
-            res.json({message:'user-or-ip-voted","You can only vote once a poll.'})
+            res.status(403).json({message:'user-or-ip-voted","You can only vote once a poll.'})
           }
           else {
             Poll.findByIdAndUpdate(req.params.id, req.body, (err, poll) => {
