@@ -43,7 +43,7 @@ module.exports = function(app) {
               console.log(res);
               $route.reload();
           }, (err) => {
-            _this.voted = true;
+            $window.alert(res.data.message);
             console.log('hit');
             console.log(err);
 
