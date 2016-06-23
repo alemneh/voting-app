@@ -13,6 +13,8 @@ module.exports = function(app) {
       templateUrl: './views/poll-view.html'
     }).when('/signup', {
       templateUrl: './views/signup.html'
+    }).when('/login', {
+      templateUrl: '/views/login-view.html'
     });
   }]);
 };

@@ -46,7 +46,7 @@ module.exports = (userRouter, models) => {
         Poll.findById(req.params.id, (err, poll) => {
           if(err) throw err;
           var ipForVote = getClientIp(req);
-          if(!poll.ipsVoted.indexOf(ipForVote)) {
+          if(poll.ipsVoted.indexOf(ipForVote)) {
             res.status(403).json({message:'user-or-ip-voted","You can only vote once a poll.'})
           }
           else {
