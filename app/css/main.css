@@ -16,9 +16,17 @@ a {
 }
 
 
-@media only screen
-and (min-device-width : 320px)
-and (max-device-width : 568px) {
+
+@media only screen and (min-width: 760px) {
+
+  #navMobile  {
+    display: none;
+  }
+
+}
+
+@media only screen and (max-width: 760px) {
+
   nav form  {
     display: none;
   }
@@ -27,14 +35,7 @@ and (max-device-width : 568px) {
     display: none;
   }
 
-}
-
-
-@media only screen
-and (min-device-width : 761px)
-and (max-device-width : 1500px) {
-  #navMobile  {
-    display: none;
-  }
-
+ body {
+   height: auto;
+ }
 }
