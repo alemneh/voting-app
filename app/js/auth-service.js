@@ -3,6 +3,7 @@ module.exports = function(app) {
     var token;
     var signedIn = false;
     var url = 'https://poll-city.herokuapp.com';
+    // var url = 'http://localhost:3000';
     var auth = {
       createUser(user, cb) {
         cb || function() {};

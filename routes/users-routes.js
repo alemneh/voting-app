@@ -1,5 +1,6 @@
 'use strict';
 const jwtAuth = require('../lib/auth.js');
+// Function to get Client IP
 var getClientIp = function(req) {
     return (req.headers["X-Forwarded-For"] ||req.headers["x-forwarded-for"] ||'').split(',')[0]
     ||req.client.remoteAddress;
@@ -46,7 +47,8 @@ module.exports = (userRouter, models) => {
         Poll.findById(req.params.id, (err, poll) => {
           if(err) throw err;
           var ipForVote = getClientIp(req);
-          if(poll.ipsVoted.indexOf(ipForVote)) {
+
+          if(poll.ipsVoted.indexOf(ipForVote) != -1) {
             res.status(403).json({message:'user-or-ip-voted","You can only vote once a poll.'})
           }
           else {
