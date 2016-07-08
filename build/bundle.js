@@ -31027,8 +31027,8 @@
 	module.exports = function(app) {
 
 	  app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
-	    // var mainRoute = 'http://localhost:3000';
-	    var mainRoute = 'https://poll-city.herokuapp.com';
+	    var mainRoute = 'http://localhost:3000';
+	    // var mainRoute = 'https://poll-city.herokuapp.com';
 
 
 	    function Resource(resourceName, subResource) {
@@ -31119,8 +31119,8 @@
 	  app.factory('AuthService', ['$http', '$window', function($http, $window) {
 	    var token;
 	    var signedIn = false;
-	    var url = 'https://poll-city.herokuapp.com';
-	    // var url = 'http://localhost:3000';
+	    // var url = 'https://poll-city.herokuapp.com';
+	    var url = 'http://localhost:3000';
 	    var auth = {
 	      createUser(user, cb) {
 	        cb || function() {};
@@ -31422,6 +31422,7 @@
 	        pollResource.removePoll(id, poll._id)
 	          .then((res) => {
 	            _this.polls = _this.polls.filter((p) => p._id != poll._id);
+	            if(!_this.polls.length) _this.zeroPolls = true;
 	          }, (err) => console.log(err))
 	      }
 
