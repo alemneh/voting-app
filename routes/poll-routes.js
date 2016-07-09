@@ -23,6 +23,7 @@ module.exports = (pollRouter, models) => {
         newPoll._owner = user.name;
         newPoll.name = req.body.name;
         user.polls.push(newPoll._id);
+        user.hookEnabled = false;
         user.save((err, user) => {
           if(err) throw err;
         });
@@ -65,6 +66,6 @@ module.exports = (pollRouter, models) => {
       });
     });
 
-    
+
 
 }

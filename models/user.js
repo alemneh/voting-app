@@ -7,12 +7,22 @@ module.exports = function(mongoose, models) {
   const userSchema = new mongoose.Schema({
     name: String,
     password: String,
-    polls: [{ type: Schema.Types.ObjectId, ref:'Poll'}]
+    polls: [{ type: Schema.Types.ObjectId, ref:'Poll'}],
+    hookEnabled: {
+      type: Boolean,
+      require: false,
+      default: true
+    }
   });
-
+  var _this;
   userSchema.pre('save', function(next) {
-    this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
-    next();
+    _this = this;
+    if(_this.hookEnabled) {
+      this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
+      next();
+    } else {
+      next();
+    }
   });
 
   //userSchema.methods.hashPassword
