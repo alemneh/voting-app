@@ -31305,7 +31305,6 @@
 	        _this.getPoll = function () {
 	            pollResource.getOne(_this.poll._id).then(function (res) {
 	                $window.localStorage.poll = JSON.stringify(res.data.data);
-	                $window.location.reload();
 	            }, function (err) {
 	                return console.log(err);
 	            });
