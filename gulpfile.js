@@ -5,6 +5,7 @@ const eslint = require('gulp-eslint');
 const concatCss = require('gulp-concat-css');
 const minifyCss = require('gulp-clean-css');
 const webpack = require('gulp-webpack');
+const babel = require('gulp-babel');
 const webpackS = require('webpack-stream');
 
 var files = ['gulpfile.js', 'server.js', __dirname + '/lib/**/*.js', __dirname + '/test/**/*.js',
@@ -99,6 +100,9 @@ gulp.task('css', function() {
 
 gulp.task('webpack', function() {
   return gulp.src(__dirname + '/app/js/index.js')
+    .pipe(babel({
+  			presets: ['es2015']
+  		}))
     .pipe(webpack( require('./webpack.config.js')))
     .pipe(gulp.dest(__dirname + '/build'));
 });
