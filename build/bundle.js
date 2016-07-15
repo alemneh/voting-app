@@ -31309,7 +31309,7 @@
 	                $window.localStorage.poll = JSON.stringify(res.data.data);
 	                console.log(res.data.data);
 	                console.log(_typeof(res.data.data));
-	                updateChart(res.data.data);
+	                updateChart(JSON.parse($window.localStorage.poll));
 	            }, function (err) {
 	                return console.log(err);
 	            });

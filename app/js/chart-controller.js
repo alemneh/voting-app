@@ -27,7 +27,7 @@ module.exports = function(app) {
           $window.localStorage.poll = JSON.stringify(res.data.data);
           console.log(res.data.data);
           console.log(typeof res.data.data);
-          updateChart(res.data.data);
+          updateChart(JSON.parse($window.localStorage.poll));
         }, (err) => console.log(err))
     };
 
