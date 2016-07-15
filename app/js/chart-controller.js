@@ -16,7 +16,6 @@ module.exports = function(app) {
         _this.labels.push(ele.name);
         _this.data.push(ele.count);
       })
-      $route.reload();
     }
 
     updateChart(_this.poll);
@@ -26,9 +25,7 @@ module.exports = function(app) {
       pollResource.getOne(_this.poll._id)
         .then((res) => {
           $window.localStorage.poll = JSON.stringify(res.data.data);
-          console.log(res.data.data);
-          console.log(typeof res.data.data);
-          updateChart(JSON.parse($window.localStorage.poll));
+          // $route.reload();
         }, (err) => console.log(err))
     };
 

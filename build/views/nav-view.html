@@ -20,8 +20,8 @@
         <li data-ng-class="{active: navCtrl.isSet(1)}"><a data-ng-click="navCtrl.setTab(1)" href="#/">Home</a></li>
         <li data-ng-if="navCtrl.signedIn" data-ng-class="{active: navCtrl.isSet(2)}"><a data-ng-click="navCtrl.setTab(2)" href="#/mypolls">My Polls</a></li>
         <li data-ng-if="navCtrl.signedIn"  data-ng-class="{active: navCtrl.isSet(3)}"><a data-ng-click="navCtrl.setTab(3)" href="#/newpoll">New Polls</a></li>
-        <li><a href="#/login">Login</a></li>
-        <li><a href="#/signup">Sign Up</a></li>
+        <li data-ng-if="navCtrl.signedOut"><a href="#/login">Login</a></li>
+        <li data-ng-if="navCtrl.signedOut"><a href="#/signup">Sign Up</a></li>
       </ul>
       <form data-ng-if="navCtrl.signedOut" class="navbar-form  pull-right" role="search">
         <div class="form-group">

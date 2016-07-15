@@ -31024,8 +31024,8 @@
 	module.exports = function (app) {
 	
 	  app.factory('httpService', ['$http', 'AuthService', function ($http, AuthService) {
-	    // var mainRoute = 'http://localhost:3000';
-	    var mainRoute = 'https://poll-city.herokuapp.com';
+	    var mainRoute = 'http://localhost:3000';
+	    // var mainRoute = 'https://poll-city.herokuapp.com';
 	
 	    function Resource(resourceName, subResource) {
 	
@@ -31113,8 +31113,8 @@
 	  app.factory('AuthService', ['$http', '$window', function ($http, $window) {
 	    var token;
 	    var signedIn = false;
-	    var url = 'https://poll-city.herokuapp.com';
-	    // var url = 'http://localhost:3000';
+	    // var url = 'https://poll-city.herokuapp.com';
+	    var url = 'http://localhost:3000';
 	    var auth = {
 	      createUser: function createUser(user, cb) {
 	        cb || function () {};
@@ -31284,8 +31284,6 @@
 
 	'use strict';
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
 	module.exports = function (app) {
 	    app.controller('ChartController', ['$window', '$http', '$route', 'httpService', function ($window, $http, $route, httpService) {
 	        var pollResource = httpService('/polls');
@@ -31300,7 +31298,6 @@
 	                _this.labels.push(ele.name);
 	                _this.data.push(ele.count);
 	            });
-	            $route.reload();
 	        }
 	
 	        updateChart(_this.poll);
@@ -31308,9 +31305,7 @@
 	        _this.getPoll = function () {
 	            pollResource.getOne(_this.poll._id).then(function (res) {
 	                $window.localStorage.poll = JSON.stringify(res.data.data);
-	                console.log(res.data.data);
-	                console.log(_typeof(res.data.data));
-	                updateChart(JSON.parse($window.localStorage.poll));
+	                // $route.reload();
 	            }, function (err) {
 	                return console.log(err);
 	            });
