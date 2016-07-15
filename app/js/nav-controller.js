@@ -26,6 +26,7 @@ module.exports = function(app) {
           _this.userName = $window.localStorage.name = res.data.data.name;
           _this.signedIn = true;
           _this.signedOut = false;
+          $location.path('/');
         }
 
       });
