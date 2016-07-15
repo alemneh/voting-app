@@ -31284,6 +31284,8 @@
 
 	'use strict';
 	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
 	module.exports = function (app) {
 	    app.controller('ChartController', ['$window', '$http', '$route', 'httpService', function ($window, $http, $route, httpService) {
 	        var pollResource = httpService('/polls');
@@ -31305,6 +31307,8 @@
 	        _this.getPoll = function () {
 	            pollResource.getOne(_this.poll._id).then(function (res) {
 	                $window.localStorage.poll = JSON.stringify(res.data.data);
+	                console.log(res.data.data);
+	                console.log(_typeof(res.data.data));
 	                updateChart(res.data.data);
 	            }, function (err) {
 	                return console.log(err);
