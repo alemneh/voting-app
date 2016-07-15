@@ -25,7 +25,7 @@ module.exports = function(app) {
       pollResource.getOne(_this.poll._id)
         .then((res) => {
           $window.localStorage.poll = JSON.stringify(res.data.data);
-
+          updateChart(res.data.data);
         }, (err) => console.log(err))
     };
 
