@@ -31300,6 +31300,7 @@
 	                _this.labels.push(ele.name);
 	                _this.data.push(ele.count);
 	            });
+	            $route.reload();
 	        }
 	
 	        updateChart(_this.poll);
