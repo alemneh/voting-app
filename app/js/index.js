@@ -3,18 +3,18 @@ require('angular');
 
 const app = angular.module('PollCity', ['ngRoute']);
   // DIRECTIVES
-require('./nav-directive')(app);
+require('./directives/nav-directive')(app);
 
   // SERVICES
-require('./http-service')(app);
-require('./auth-service')(app);
+require('./services/http-service')(app);
+require('./services/auth-service')(app);
 
   // CONTROLLERS
-require('./home-controller')(app);
-require('./nav-controller')(app);
-require('./poll-controller')(app);
-require('./chart-controller')(app);
-require('./my-polls')(app);
+require('./controllers/home-controller')(app);
+require('./controllers/nav-controller')(app);
+require('./controllers/poll-controller')(app);
+require('./controllers/chart-controller')(app);
+require('./controllers/my-polls')(app);
 
  // ROUTES
 require('./route-config')(app);
@@ -24,28 +24,6 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
 
    const _this = this;
    const pollResource = httpService('/users/', '/polls');
-
-  // Poll Constructor
-   function Poll(name) {
-     this.name = name;
-     this.options = [];
-     this.addOp = addOp;
-     this.addVote = addVote;
-
-     function addOp(opt) {
-       this.options.push({name:opt, count: 0});
-     }
-
-     function addVote(option) {
-       this.options.forEach((ele) => {
-         if(ele.name == option) {
-           ele.count++;
-           return;
-         }
-       });
-     }
-
-   }
 
 
    _this.createUser = function(user) {

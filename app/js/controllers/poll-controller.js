@@ -4,27 +4,6 @@ module.exports = function(app) {
   app.controller('PollController', ['$window', '$location', '$http', '$route', 'httpService',
   function($window, $location, $http, $route, httpService) {
     let pollResource = httpService('/polls');
-    function Poll(name) {
-      this.name = name;
-      this.options = [];
-      this.addOp = addOp;
-      this.addVote = addVote;
-
-      function addOp(opt) {
-        this.options.push({name:opt, count: 0});
-      }
-
-      function addVote(option) {
-        this.options.forEach((ele) => {
-          if(ele.name == option) {
-            ele.count++;
-            return;
-          }
-        })
-      }
-
-    }
-
 
     let _this = this;
     _this.voted = true;
@@ -40,7 +19,7 @@ module.exports = function(app) {
         })
         pollResource.update(_this.poll, _this.poll._id)
           .then((res) => {
-              $route.reload();
+             $route.reload();
           }, (err) => {
             $window.alert(err.data.message);
 
