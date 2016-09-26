@@ -14,7 +14,7 @@ require('./controllers/home-controller')(app);
 require('./controllers/nav-controller')(app);
 require('./controllers/poll-controller')(app);
 require('./controllers/chart-controller')(app);
-require('./controllers/my-polls')(app);
+require('./controllers/my-polls-controller')(app);
 
  // ROUTES
 require('./route-config')(app);

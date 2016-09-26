@@ -71,27 +71,6 @@
 	  var _this = this;
 	  var pollResource = httpService('/users/', '/polls');
 	
-	  // Poll Constructor
-	  function Poll(name) {
-	    this.name = name;
-	    this.options = [];
-	    this.addOp = addOp;
-	    this.addVote = addVote;
-	
-	    function addOp(opt) {
-	      this.options.push({ name: opt, count: 0 });
-	    }
-	
-	    function addVote(option) {
-	      this.options.forEach(function (ele) {
-	        if (ele.name == option) {
-	          ele.count++;
-	          return;
-	        }
-	      });
-	    }
-	  }
-	
 	  _this.createUser = function (user) {
 	    AuthService.createUser(user, function (err, res) {
 	      if (!res) {
@@ -31236,25 +31215,6 @@
 	module.exports = function (app) {
 	  app.controller('PollController', ['$window', '$location', '$http', '$route', 'httpService', function ($window, $location, $http, $route, httpService) {
 	    var pollResource = httpService('/polls');
-	    function Poll(name) {
-	      this.name = name;
-	      this.options = [];
-	      this.addOp = addOp;
-	      this.addVote = addVote;
-	
-	      function addOp(opt) {
-	        this.options.push({ name: opt, count: 0 });
-	      }
-	
-	      function addVote(option) {
-	        this.options.forEach(function (ele) {
-	          if (ele.name == option) {
-	            ele.count++;
-	            return;
-	          }
-	        });
-	      }
-	    }
 	
 	    var _this = this;
 	    _this.voted = true;
