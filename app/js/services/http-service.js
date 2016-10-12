@@ -1,7 +1,8 @@
 module.exports = function(app) {
 
   app.factory('httpService', ['$http', 'AuthService', function($http, AuthService) {
-    var mainRoute = process.env.URL || 'http://localhost:3000';
+    // var mainRoute = 'http://localhost:3000';
+    var mainRoute = 'https://poll-city.herokuapp.com';
 
 
     function Resource(resourceName, subResource) {
