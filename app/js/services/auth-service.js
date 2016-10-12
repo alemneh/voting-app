@@ -4,7 +4,7 @@ module.exports = function(app) {
     var signedIn = false;
     var url = process.env.URL || 'http://localhost:3000';
     console.log(process.env.URL);
-    console.log(process.env.PORT);
+    console.log(process.env.NODE_ENV);
     var auth = {
       createUser(user, cb) {
         cb || function() {};
