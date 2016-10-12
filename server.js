@@ -6,8 +6,10 @@ const models = require('./models');
 const userRouter = express.Router();
 const pollRouter = express.Router();
 const loginRouter = express.Router();
-let port = process.env.PORT || 3000;
-let url = process.env.URL || 'http://localhost:3000';
+var env = process.env.NODE_ENV || 'devlopment';
+var CONFIG = require('./config/config.json')[env];
+var port = process.env.PORT || CONFIG.port || 3000;
+var url = process.env.URL || CONFIG.host || 'http://localhost:3000';
 
 
 
