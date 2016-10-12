@@ -3,6 +3,7 @@ module.exports = function(app) {
     var token;
     var signedIn = false;
     var url = process.env.URL || 'http://localhost:3000';
+    console.log(process.env.URL);
     var auth = {
       createUser(user, cb) {
         cb || function() {};
