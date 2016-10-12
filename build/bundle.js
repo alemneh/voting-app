@@ -31315,7 +31315,7 @@
 	        _this.poll = JSON.parse($window.localStorage.poll);
 	        _this.labels = [];
 	        _this.data = [];
-	        _this.voted = JSON.parse($window.localStorage.voted) || false;
+	        // _this.voted = JSON.parse($window.localStorage.voted) || false;
 	
 	        function updateChart(poll) {
 	            _this.data = [];
