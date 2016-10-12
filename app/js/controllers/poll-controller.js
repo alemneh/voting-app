@@ -2,7 +2,8 @@
 
 module.exports = function(app) {
   app.controller('PollController', ['$window', '$location', '$http', '$route', 'httpService',
-  function($window, $location, $http, $route, httpService) {
+                  'ChartService',
+  function($window, $location, $http, $route, httpService, ChartService) {
     let pollResource = httpService('/polls');
 
     let _this = this;
@@ -19,6 +20,7 @@ module.exports = function(app) {
         })
         pollResource.update(_this.poll, _this.poll._id)
           .then((res) => {
+             $window.localStorage.voted = JSON.stringify(true);
              $route.reload();
           }, (err) => {
             $window.alert(err.data.message);

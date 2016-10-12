@@ -54,22 +54,44 @@
 	
 	// SERVICES
 	__webpack_require__(4)(app);
-	__webpack_require__(5)(app);
-	
-	// CONTROLLERS
 	__webpack_require__(6)(app);
 	__webpack_require__(7)(app);
+	
+	// CONTROLLERS
 	__webpack_require__(8)(app);
 	__webpack_require__(9)(app);
 	__webpack_require__(10)(app);
+	__webpack_require__(11)(app);
+	__webpack_require__(12)(app);
 	
 	// ROUTES
-	__webpack_require__(11)(app);
+	__webpack_require__(13)(app);
 	
 	app.controller('MainController', ['httpService', 'AuthService', '$location', '$window', function (httpService, AuthService, $location, $window) {
 	
 	  var _this = this;
 	  var pollResource = httpService('/users/', '/polls');
+	
+	  // Poll Constructor
+	  function Poll(name) {
+	    this.name = name;
+	    this.options = [];
+	    this.addOp = addOp;
+	    this.addVote = addVote;
+	
+	    function addOp(opt) {
+	      this.options.push({ name: opt, count: 0 });
+	    }
+	
+	    function addVote(option) {
+	      this.options.forEach(function (ele) {
+	        if (ele.name == option) {
+	          ele.count++;
+	          return;
+	        }
+	      });
+	    }
+	  }
 	
 	  _this.createUser = function (user) {
 	    AuthService.createUser(user, function (err, res) {
@@ -30996,15 +31018,14 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 	
 	module.exports = function (app) {
 	
 	  app.factory('httpService', ['$http', 'AuthService', function ($http, AuthService) {
-	    // var mainRoute = 'http://localhost:3000';
-	    var mainRoute = 'https://poll-city.herokuapp.com';
+	    var mainRoute = process.env.URL || 'http://localhost:3000';
 	
 	    function Resource(resourceName, subResource) {
 	
@@ -31081,19 +31102,119 @@
 	    };
 	  }]);
 	};
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	'use strict';
+	// shim for using process in browser
+	
+	var process = module.exports = {};
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+	
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+	
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = setTimeout(cleanUpNextTick);
+	    draining = true;
+	
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    clearTimeout(timeout);
+	}
+	
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        setTimeout(drainQueue, 0);
+	    }
+	};
+	
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+	
+	function noop() {}
+	
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+	
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 	
 	module.exports = function (app) {
 	  app.factory('AuthService', ['$http', '$window', function ($http, $window) {
 	    var token;
 	    var signedIn = false;
-	    var url = 'https://poll-city.herokuapp.com';
-	    // var url = 'http://localhost:3000';
+	    var url = process.env.URL || 'http://localhost:3000';
 	    var auth = {
 	      createUser: function createUser(user, cb) {
 	        cb || function () {};
@@ -31131,9 +31252,50 @@
 	    return auth;
 	  }]);
 	};
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 6 */
+/* 7 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function (app) {
+	    app.factory('ChartService', [function () {
+	        var ctx = document.getElementById("myChart");
+	
+	        var chart = {
+	            createChart: function createChart(labels, data) {
+	                var myChart = new Chart(ctx, {
+	                    type: 'bar',
+	                    data: {
+	                        labels: labels,
+	                        datasets: [{
+	                            label: '# of Votes',
+	                            data: data,
+	                            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+	                            borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+	                            borderWidth: 1
+	                        }]
+	                    },
+	                    options: {
+	                        scales: {
+	                            yAxes: [{
+	                                ticks: {
+	                                    beginAtZero: true
+	                                }
+	                            }]
+	                        }
+	                    }
+	                });
+	            }
+	        };
+	        return chart;
+	    }]);
+	};
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31160,7 +31322,7 @@
 	};
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31207,13 +31369,13 @@
 	};
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
 	
 	module.exports = function (app) {
-	  app.controller('PollController', ['$window', '$location', '$http', '$route', 'httpService', function ($window, $location, $http, $route, httpService) {
+	  app.controller('PollController', ['$window', '$location', '$http', '$route', 'httpService', 'ChartService', function ($window, $location, $http, $route, httpService, ChartService) {
 	    var pollResource = httpService('/polls');
 	
 	    var _this = this;
@@ -31228,6 +31390,7 @@
 	          if (ele.name == poll.option.name) return ele.count++;
 	        });
 	        pollResource.update(_this.poll, _this.poll._id).then(function (res) {
+	          $window.localStorage.voted = JSON.stringify(true);
 	          $route.reload();
 	        }, function (err) {
 	          $window.alert(err.data.message);
@@ -31240,7 +31403,7 @@
 	};
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31252,6 +31415,7 @@
 	        _this.poll = JSON.parse($window.localStorage.poll);
 	        _this.labels = [];
 	        _this.data = [];
+	        _this.voted = JSON.parse($window.localStorage.voted) || false;
 	
 	        function updateChart(poll) {
 	            _this.data = [];
@@ -31264,42 +31428,54 @@
 	        updateChart(_this.poll);
 	
 	        _this.getPoll = function () {
+	            var _this2 = this;
+	
 	            pollResource.getOne(_this.poll._id).then(function (res) {
 	                $window.localStorage.poll = JSON.stringify(res.data.data);
-	                // $route.reload();
+	                _this2.voted = JSON.parse($window.localStorage.voted);
+	
+	                if (_this.voted) {
+	                    $route.reload();
+	                }
+	
+	                $window.localStorage.voted = JSON.stringify(false);
 	            }, function (err) {
 	                return console.log(err);
 	            });
 	        };
 	
-	        var ctx = document.getElementById("myChart");
-	        var myChart = new Chart(ctx, {
-	            type: 'bar',
-	            data: {
-	                labels: _this.labels,
-	                datasets: [{
-	                    label: '# of Votes',
-	                    data: _this.data,
-	                    backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
-	                    borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
-	                    borderWidth: 1
-	                }]
-	            },
-	            options: {
-	                scales: {
-	                    yAxes: [{
-	                        ticks: {
-	                            beginAtZero: true
-	                        }
+	        function chartData(labels, data) {
+	            return {
+	                type: 'bar',
+	                data: {
+	                    labels: labels,
+	                    datasets: [{
+	                        label: '# of Votes',
+	                        data: data,
+	                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+	                        borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+	                        borderWidth: 1
 	                    }]
+	                },
+	                options: {
+	                    scales: {
+	                        yAxes: [{
+	                            ticks: {
+	                                beginAtZero: true
+	                            }
+	                        }]
+	                    }
 	                }
-	            }
-	        });
+	            };
+	        }
+	
+	        var ctx = document.getElementById("myChart");
+	        var myChart = new Chart(ctx, chartData(_this.labels, _this.data));
 	    }]);
 	};
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31346,7 +31522,7 @@
 	};
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports) {
 
 	'use strict';

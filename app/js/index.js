@@ -8,6 +8,7 @@ require('./directives/nav-directive')(app);
   // SERVICES
 require('./services/http-service')(app);
 require('./services/auth-service')(app);
+require('./services/chart-service')(app);
 
   // CONTROLLERS
 require('./controllers/home-controller')(app);
@@ -24,6 +25,28 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
 
    const _this = this;
    const pollResource = httpService('/users/', '/polls');
+
+   // Poll Constructor
+   function Poll(name) {
+     this.name = name;
+     this.options = [];
+     this.addOp = addOp;
+     this.addVote = addVote;
+
+     function addOp(opt) {
+       this.options.push({name:opt, count: 0});
+     }
+
+     function addVote(option) {
+       this.options.forEach((ele) => {
+         if(ele.name == option) {
+           ele.count++;
+           return;
+         }
+       });
+     }
+
+   }
 
 
    _this.createUser = function(user) {

@@ -8,6 +8,9 @@ module.exports = function(app) {
     let pollResource = httpService('/polls');
     _this.polls = ['polls'];
 
+
+
+
     _this.getPolls = function() {
       pollResource.getAll().then((res) => {
         _this.polls = res.data.data;

@@ -2,8 +2,7 @@ module.exports = function(app) {
   app.factory('AuthService', ['$http', '$window', function($http, $window) {
     var token;
     var signedIn = false;
-    var url = 'https://poll-city.herokuapp.com';
-    // var url = 'http://localhost:3000';
+    var url = process.env.URL || 'http://localhost:3000';
     var auth = {
       createUser(user, cb) {
         cb || function() {};
