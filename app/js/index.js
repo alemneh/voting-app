@@ -33,6 +33,7 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
      this.addOp = addOp;
      this.addVote = addVote;
 
+
      function addOp(opt) {
        this.options.push({name:opt, count: 0});
      }
@@ -48,8 +49,41 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
 
    }
 
+   _this.validateLoginInput = function(username, password) {
+    if(!username) {
+      return 'Please enter username'
+    } else if(!password) {
+      return 'Pleas enter password'
+    } else {
+      return null;
+    }
+  }
+
 
    _this.createUser = function(user) {
+     let username;
+     let password;
+     _this.signupError = false;
+     console.log(_this.signupError);
+     console.log(user);
+     if(!user) {
+       username = '';
+       password = '';
+     } else {
+       username = user.username;
+       password = user.password;
+     }
+
+     let validateLoginInput = _this.validateLoginInput(username, password);
+     console.log(validateLoginInput);
+     _this.signupError = false;
+
+     if(validateLoginInput) {
+      _this.error = validateLoginInput;
+      _this.signupError = true;
+      return;
+    }
+
      AuthService.createUser(user, (err, res) => {
        if(!res) {
          console.log(err.data.error);

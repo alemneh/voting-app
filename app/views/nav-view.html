@@ -37,3 +37,7 @@
     </div>
   </div>
 </nav>
+<div data-ng-if="navCtrl.loginError" class="alert alert-dismissible alert-danger">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <span>{{navCtrl.error}}</span>
+</div>

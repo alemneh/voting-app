@@ -1,7 +1,7 @@
 <div class="container">
   <div data-ng-if="mainCtrl.signupError" class="alert alert-dismissible alert-danger">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <span>Username taken!</span>
+    <span>{{mainCtrl.error}}</span>
   </div>
   <form id="signUp" data-ng-submit="mainCtrl.createUser(newUser)" class="form-horizontal">
     <fieldset>

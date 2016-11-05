@@ -93,7 +93,40 @@
 	    }
 	  }
 	
+	  _this.validateLoginInput = function (username, password) {
+	    if (!username) {
+	      return 'Please enter username';
+	    } else if (!password) {
+	      return 'Pleas enter password';
+	    } else {
+	      return null;
+	    }
+	  };
+	
 	  _this.createUser = function (user) {
+	    var username = void 0;
+	    var password = void 0;
+	    _this.signupError = false;
+	    console.log(_this.signupError);
+	    console.log(user);
+	    if (!user) {
+	      username = '';
+	      password = '';
+	    } else {
+	      username = user.username;
+	      password = user.password;
+	    }
+	
+	    var validateLoginInput = _this.validateLoginInput(username, password);
+	    console.log(validateLoginInput);
+	    _this.signupError = false;
+	
+	    if (validateLoginInput) {
+	      _this.error = validateLoginInput;
+	      _this.signupError = true;
+	      return;
+	    }
+	
 	    AuthService.createUser(user, function (err, res) {
 	      if (!res) {
 	        console.log(err.data.error);
@@ -31018,7 +31051,7 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -31026,7 +31059,8 @@
 	
 	  app.factory('httpService', ['$http', 'AuthService', function ($http, AuthService) {
 	    // var mainRoute = 'http://localhost:3000';
-	    var mainRoute = 'https://poll-city.herokuapp.com';
+	    // var mainRoute = 'https://poll-city.herokuapp.com';
+	    var mainRoute = ("https://poll-city.herokuapp.com");
 	
 	    function Resource(resourceName, subResource) {
 	
@@ -31106,7 +31140,7 @@
 
 /***/ },
 /* 5 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -31114,7 +31148,8 @@
 	  app.factory('AuthService', ['$http', '$window', function ($http, $window) {
 	    var token;
 	    var signedIn = false;
-	    var url = 'https://poll-city.herokuapp.com';
+	    var url = ("https://poll-city.herokuapp.com");
+	    // // var url = 'https://poll-city.herokuapp.com';
 	    // var url = 'http://localhost:3000';
 	    var auth = {
 	      createUser: function createUser(user, cb) {
@@ -31233,20 +31268,51 @@
 	    var _this = this;
 	    _this.signedIn = false;
 	    _this.signedOut = true;
+	    _this.loginError = false;
+	    _this.error;
 	    if ($window.localStorage.token) {
 	      _this.signedIn = true;
 	      _this.signedOut = false;
 	    }
+	
+	    _this.validateLoginInput = function (username, password) {
+	      if (!username) {
+	        return 'Please enter username';
+	      } else if (!password) {
+	        return 'Pleas enter password';
+	      } else {
+	        return null;
+	      }
+	    };
 	
 	    _this.signUp = function () {
 	      $location.path('/signup');
 	    };
 	
 	    _this.signIn = function (user) {
+	      var username = void 0;
+	      var password = void 0;
+	      if (!user) {
+	        username = '';
+	        password = '';
+	      } else {
+	        username = user.username;
+	        password = user.password;
+	      }
+	      _this.loginError = false;
+	      var validateLoginInput = _this.validateLoginInput(username, password);
+	
+	      if (validateLoginInput) {
+	        _this.error = validateLoginInput;
+	        _this.loginError = true;
+	        return;
+	      }
+	
 	      AuthService.signIn(user, function (err, res) {
 	        if (err) console.log(err);
 	        if (res.data.status == 'failure') {
-	          console.log(res.data.message);
+	          _this.error = res.data.message;
+	          _this.loginError = true;
 	        } else {
 	          _this.userId = $window.localStorage.id = res.data.data._id;
 	          _this.userName = $window.localStorage.name = res.data.data.name;
