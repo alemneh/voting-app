@@ -30,24 +30,27 @@ module.exports = function(app) {
     };
 
     _this.signIn = function(user) {
-      let username;
-      let password;
-      if(!user) {
-        username = '';
-        password = '';
-      } else {
-        username = user.username;
-        password = user.password;
-      }
-      _this.loginError = false;
-      const validateLoginInput = _this.validateLoginInput(username, password);
+      // let username;
+      // let password;
+      // if(!user) {
+      //   username = '';
+      //   password = '';
+      // } else {
+      //   username = user.username;
+      //   password = user.password;
+      // }
+      // _this.loginError = false;
+      // const validateLoginInput = _this.validateLoginInput(username, password);
+      //
+      // if(validateLoginInput) {
+      //   _this.error = validateLoginInput;
+      //   _this.loginError = true;
+      //   return;
+      // }
 
-      if(validateLoginInput) {
-        _this.error = validateLoginInput;
-        _this.loginError = true;
+      if(!user || !user.username || !user.password) {
         return;
       }
-
       AuthService.signIn(user, (err, res) => {
         if(err) console.log(err);
         if(res.data.status == 'failure') {
@@ -58,6 +61,7 @@ module.exports = function(app) {
           _this.userName = $window.localStorage.name = res.data.data.name;
           _this.signedIn = true;
           _this.signedOut = false;
+          _this.loginError = false;
           $location.path('/');
         }
 

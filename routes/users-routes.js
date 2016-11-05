@@ -23,7 +23,7 @@ module.exports = (userRouter, models) => {
             });
           });
         } else {
-          res.status(401).json({error: 'Username taken!'});
+          res.json({status: 'failure', error: 'Username taken!'});
         }
       });
     });

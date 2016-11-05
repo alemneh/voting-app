@@ -61,34 +61,38 @@ app.controller('MainController', ['httpService', 'AuthService', '$location', '$w
 
 
    _this.createUser = function(user) {
-     let username;
-     let password;
-     _this.signupError = false;
-     console.log(_this.signupError);
-     console.log(user);
-     if(!user) {
-       username = '';
-       password = '';
-     } else {
-       username = user.username;
-       password = user.password;
+    //  let username;
+    //  let password;
+    //  _this.signupError = false;
+    //  console.log(_this.signupError);
+    //  console.log(user);
+    //  if(!user) {
+    //    username = '';
+    //    password = '';
+    //  } else {
+    //    username = user.username;
+    //    password = user.password;
+    //  }
+    //
+    //  let validateLoginInput = _this.validateLoginInput(username, password);
+    //  console.log(validateLoginInput);
+    //  _this.signupError = false;
+    //
+    //  if(validateLoginInput) {
+    //   _this.error = validateLoginInput;
+    //   _this.signupError = true;
+    //   return;
+    // }
+     if(!user || !user.name || !user.password) {
+       return;
      }
 
-     let validateLoginInput = _this.validateLoginInput(username, password);
-     console.log(validateLoginInput);
-     _this.signupError = false;
-
-     if(validateLoginInput) {
-      _this.error = validateLoginInput;
-      _this.signupError = true;
-      return;
-    }
-
      AuthService.createUser(user, (err, res) => {
-       if(!res) {
-         console.log(err.data.error);
-         _this.signupError = true;
+       if(res.data.status == 'failure') {
+         _this.error = res.data.message;
+         _this.signupError = true
        } else {
+         _this.signupError = false;
          $location.path('/');
        }
 
